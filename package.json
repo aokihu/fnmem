@@ -1,0 +1,40 @@
+{
+  "name": "fnmem",
+  "version": "0.1.0",
+  "description": "Functional memory runtime for AI agents.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "private": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist/src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test test/runtime.test.mjs",
+    "example": "npm run build && node dist/examples/basic.js",
+    "check": "npm run test"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "memory",
+    "functional-memory",
+    "agent-runtime",
+    "llm"
+  ],
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  }
+}

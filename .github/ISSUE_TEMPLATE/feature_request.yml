@@ -1,0 +1,25 @@
+name: Design / feature proposal
+description: Propose a focused change to fnmem's execution model or integration boundary.
+title: "[proposal] "
+labels: [proposal]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What concrete agent-memory problem is not covered by the current model?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Why fnmem?
+      description: Why should this live in the memory runtime rather than the host agent or retrieval layer?
+    validations:
+      required: true
