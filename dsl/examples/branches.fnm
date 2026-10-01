@@ -1,0 +1,84 @@
+language fnmem "0";
+
+memory "chain" {
+  context { failures: number; }
+  when context.failures >= 3 {
+    emit text "change strategy";
+  } else if context.failures == 2 {
+    emit text "check hypothesis";
+  } else when context.failures == 1 {
+    emit text "observe";
+  } else {
+    emit text "no failures";
+  }
+}
+
+memory "independent" {
+  context { failures: number; }
+  when context.failures >= 2 { emit text "check hypothesis"; }
+  when (context.failures >= 3) { emit text "change strategy"; }
+}
+
+memory "route" {
+  context { error: string; hasProxy: boolean = false; }
+  match context.error {
+    "timeout" | "connection-reset" when context.hasProxy => {
+      emit text "check proxy";
+      emit memory "advice" with { label: "proxy" };
+    },
+    "timeout" if not context.hasProxy => {
+      emit text "check timeout";
+    },
+    "access-denied" => {
+      emit memory "advice" with { label: "permissions" };
+    },
+    _ => {
+      emit text "collect evidence";
+    },
+  }
+  emit text "routing complete";
+}
+
+memory "advice" {
+  input { label: string; }
+  emit text "inspect " + input.label;
+}
+
+memory "first-condition" {
+  context { failures: number; hasProxy: boolean; }
+  match true {
+    _ when context.failures >= 3 => { emit text "change strategy"; },
+    _ if context.hasProxy => { emit text "check proxy"; },
+    _ => {},
+  }
+}
+
+memory "boolean-match" {
+  context { enabled: boolean; }
+  match context.enabled {
+    true => { emit text "enabled"; },
+    false => { emit text "disabled"; }
+  }
+}
+
+memory "number-match" {
+  context { code: number; }
+  match context.code {
+    401 | 403 => { emit text "check authorization"; },
+    413 => { emit text "check request size"; },
+    _ => { emit text "collect evidence"; },
+  }
+}
+
+memory "nested-match" {
+  context { error: string; hasProxy: boolean; }
+  match context.error {
+    "timeout" => {
+      match context.hasProxy {
+        true => { emit text "check proxy"; },
+        false => { emit text "check timeout"; },
+      }
+    },
+    _ => {},
+  }
+}

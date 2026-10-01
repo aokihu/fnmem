@@ -1,0 +1,1 @@
+language fnmem "0"; memory "x" { when context.__budget > 0 { emit text "x"; } }

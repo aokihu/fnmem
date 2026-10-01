@@ -1,0 +1,94 @@
+{
+  "recovery-a": {
+    "success": [
+      "check-proxy",
+      "fix-proxy"
+    ],
+    "failure": [
+      "tune-reconnect",
+      "tune-reconnect",
+      "tune-reconnect",
+      "tune-reconnect"
+    ]
+  },
+  "startup-a": {
+    "success": [
+      "check-access",
+      "repair-access"
+    ],
+    "failure": [
+      "change-port",
+      "change-port",
+      "change-port",
+      "change-port"
+    ]
+  },
+  "upload-a": {
+    "success": [
+      "inspect-limit",
+      "resize-payload"
+    ],
+    "failure": [
+      "retry-upload",
+      "retry-upload",
+      "retry-upload",
+      "retry-upload"
+    ]
+  },
+  "clock-a": {
+    "success": [
+      "check-clock",
+      "sync-clock"
+    ],
+    "failure": [
+      "disable-verification",
+      "disable-verification",
+      "disable-verification",
+      "disable-verification"
+    ]
+  },
+  "lighting-a": {
+    "success": [
+      "reduce-shadow"
+    ],
+    "failure": [
+      "change-proxy",
+      "change-proxy",
+      "change-proxy",
+      "change-proxy"
+    ]
+  },
+  "branching-a": {
+    "success": [
+      "deduplicate"
+    ],
+    "failure": [
+      "increase-branches",
+      "increase-branches",
+      "increase-branches",
+      "increase-branches"
+    ]
+  },
+  "preference-a": {
+    "success": [
+      "set-low"
+    ],
+    "failure": [
+      "set-high",
+      "set-high",
+      "set-high",
+      "set-high"
+    ]
+  },
+  "api-a": {
+    "success": [
+      "call-v2"
+    ],
+    "failure": [
+      "call-v1",
+      "call-v1",
+      "call-v1",
+      "call-v1"
+    ]
+  }
+}

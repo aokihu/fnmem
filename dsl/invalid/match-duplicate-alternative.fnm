@@ -1,0 +1,1 @@
+language fnmem "0"; memory "x" { match 0 { 0 | -0 => {}, _ => {} } }

@@ -1,0 +1,8 @@
+{
+  "version": "pilot-1",
+  "purpose": "synthetic harness validation; not a real-agent benchmark result",
+  "files": {
+    "development.json": "2684b43d5d8c1afaa7af99e3aa6183e90ea8289862b7862572e352165b8904fb",
+    "holdout.json": "b461e4ce5e68c99f232156485dff008c1ee28ed96ef0465db11c38e85557e47f"
+  }
+}

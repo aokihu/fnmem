@@ -1,0 +1,1 @@
+language fnmem "0"; memory "x" { when false { match 1 { "1" => {}, _ => {} } } }

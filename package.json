@@ -22,9 +22,13 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test test/runtime.test.mjs",
+    "test": "npm run build && node --test test/*.test.mjs",
     "example": "npm run build && node dist/examples/basic.js",
-    "check": "npm run test"
+    "check": "npm run test && npm run dsl:check",
+    "dsl:check": "node scripts/check-dsl-spec.mjs",
+    "eval:smoke": "npm run build && node scripts/evaluate.mjs smoke",
+    "eval:score": "npm run build && node scripts/evaluate.mjs score",
+    "eval:consistency": "npm run build && node scripts/evaluate.mjs consistency"
   },
   "keywords": [
     "ai",

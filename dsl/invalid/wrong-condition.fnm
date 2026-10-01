@@ -1,0 +1,1 @@
+language fnmem "0"; memory "x" { if (1) { emit text "x"; } }

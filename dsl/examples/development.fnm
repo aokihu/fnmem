@@ -1,0 +1,90 @@
+language fnmem "0";
+
+// Public development experience only; this is not compiled yet.
+memory "periodic-disconnect" {
+  context { periodic: boolean; hasProxy: boolean; }
+  when context.periodic {
+    when context.hasProxy {
+      emit text "Inspect proxy timeout first. After the check, correct the confirmed setting.";
+    } else {
+      emit text "Inspect heartbeat first. After the check, correct the confirmed setting.";
+    }
+    emit text "Repeating reconnect tuning after it failed does not address the cause.";
+  }
+}
+
+memory "startup-recovery" {
+  context { portAvailable: boolean; error: string; }
+  when context.portAvailable and context.error == "access-denied" {
+    emit text "Inspect data directory permissions before repairing them. Do not keep changing the port after that approach failed.";
+  }
+}
+
+memory "upload-experience" {
+  context { httpStatus: number; }
+  when context.httpStatus == 413 {
+    emit text "At another endpoint, HTTP 413 meant the request exceeded its configured limit. Inspect the current endpoint limit, then reduce the payload to fit it; do not assume the old numeric limit transfers.";
+  }
+}
+
+memory "clock-experience" {
+  context { clockShiftDetected: boolean; }
+  when context.clockShiftDetected {
+    emit text "On a previous machine, certificate checks failed because the clock was wrong. Verify current time and correct it. Keep certificate verification enabled.";
+  }
+}
+
+memory "network-tip" {
+  context { networkError: boolean = false; hasProxy: boolean = false; }
+  when context.networkError and context.hasProxy {
+    emit text "When network requests fail behind a proxy, inspect proxy settings.";
+  }
+}
+
+memory "lighting-preference" {
+  context { requestedShadow: string = ""; }
+  when context.requestedShadow == "low" {
+    emit text "When the requested product shadow is low, reduce shadow intensity.";
+  }
+}
+
+memory "render-tip" {
+  context { requestedShadow: string = ""; }
+  when context.requestedShadow == "low" {
+    emit text "For low-shadow product images, reduce shadow intensity.";
+  }
+}
+
+memory "planning-experience" {
+  context { duplicateBranches: boolean; }
+  when context.duplicateBranches {
+    emit text "When branch results duplicate each other, remove duplicates and retain distinct alternatives. Increasing branch count alone does not supply diversity.";
+  }
+}
+
+memory "old-preference" {
+  emit text "Historical general preference: high shadows.";
+}
+
+memory "later-preference" {
+  context { currentPreference: string = ""; scope: string = ""; }
+  when context.scope == "current-task" and context.currentPreference != "" {
+    emit text "Explicit current-task preference: " + context.currentPreference + " shadows. This takes precedence over either historical preference.";
+  } else {
+    emit text "Later general preference: low shadows. An explicit current-task preference takes precedence over either historical preference.";
+  }
+}
+
+memory "v1-experience" {
+  context { apiVersion: string; }
+  when context.apiVersion == "v1" {
+    emit text "For a service configured for API v1, call its v1 endpoint.";
+  }
+}
+
+memory "v2-experience" {
+  context { apiVersion: string; }
+  when context.apiVersion == "v2" {
+    emit text "For a service configured for API v2, call its v2 endpoint. Match the configured API version rather than assuming the most recent experience applies.";
+  }
+}

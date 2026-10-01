@@ -1,0 +1,1 @@
+language fnmem "0"; memory "x" { emit memory "y" with { n: 1, n: 2 }; } memory "y" { input { n: number; } }

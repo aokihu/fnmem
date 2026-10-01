@@ -11,3 +11,12 @@ export class MemoryBudgetExceededError extends Error {
     this.name = "MemoryBudgetExceededError";
   }
 }
+
+export class InvalidRecallRequestError extends Error {
+  readonly code = "E_QUERY";
+
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidRecallRequestError";
+  }
+}

@@ -1,0 +1,53 @@
+(* fnmem-dsl-0. Lexical rules and static constraints are in DSL.md.
+   EBNF: comma = sequence; | = choice; [] = optional; {} = repetition.
+   Terminals are double-quoted; STRING/NUMBER/IDENT are lexical tokens. *)
+program = "language", "fnmem", STRING, ";", memory, { memory } ;
+memory = "memory", STRING, "{", [ context ], [ input ], { statement }, "}" ;
+context = "context", "{", { field }, "}" ;
+input = "input", "{", { field }, "}" ;
+field = IDENT, ":", type, [ "=", literal ], ";" ;
+type = "string" | "number" | "boolean" ;
+statement = conditional | matchStatement | textEmission | memoryEmission ;
+conditional = ( "when" | "if" ), expression, block,
+              [ "else", ( block | conditional ) ] ;
+matchStatement = "match", expression, "{", arm, { ",", arm }, [ "," ], "}" ;
+arm = pattern, [ ( "when" | "if" ), expression ], "=>", block ;
+pattern = "_" | literal, { "|", literal } ;
+block = "{", { statement }, "}" ;
+textEmission = "emit", "text", expression, ";" ;
+memoryEmission = "emit", "memory", reference, [ "with", arguments ], ";" ;
+reference = STRING ;
+arguments = "{", [ argument, { ",", argument } ], "}" ;
+argument = IDENT, ":", expression ;
+expression = disjunction ;
+disjunction = conjunction, { "or", conjunction } ;
+conjunction = equality, { "and", equality } ;
+equality = ordering, [ ( "==" | "!=" ), ordering ] ;
+ordering = concatenation, [ ( "<" | "<=" | ">" | ">=" ), concatenation ] ;
+concatenation = unary, { "+", unary } ;
+unary = "not", unary | primary ;
+primary = literal | access | hasSource | "(", expression, ")" ;
+access = ( "context" | "input" ), ".", IDENT
+       | "execution", ".", ( "depth" | "count" )
+       | "workingMemory", ".", "count" ;
+hasSource = "workingMemory", ".", "hasSource", "(", reference, ")" ;
+literal = STRING | NUMBER | "true" | "false" ;
+
+(* Header STRING must decode to "0".
+   IDENT = [A-Za-z_][A-Za-z0-9_]*, excluding every keyword below.
+   NUMBER = -?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?
+   STRING = JSON double-quoted string, valid surrogate pairs only.
+   Tokens use maximal munch; <= >= == != => precede their shorter tokens.
+   Whitespace = U+0020 U+0009 U+000A U+000D. // comments are skipped.
+   Keywords: language fnmem memory context input string number boolean
+     when if else match emit text with or and not true false execution workingMemory
+     depth count hasSource.
+   _ is reserved as a wildcard, not a field identifier.
+   Any context/input field name or named argument beginning with __ is
+   reserved for the runtime and rejected as E_RESERVED. Its generated
+   budget key is never available to DSL source lookup.
+   No trailing comma in arguments, optional semicolon, null, single quotes,
+   or block comments. Match arms require commas; their final comma is optional.
+   Unknown access members produce E_FIELD; nonliteral memory refs produce
+   E_REFERENCE. A parser may classify these after accepting a wider error node.
+   Repeated schema blocks are E_DUPLICATE rather than generic E_SYNTAX. *)

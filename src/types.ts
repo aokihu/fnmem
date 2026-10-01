@@ -22,6 +22,7 @@ export interface MemoryFunctionInput {
   readonly input: MemoryInput;
   readonly workingMemory: readonly TextEmission[];
   readonly execution: {
+    /** Activation hops from a recall entrypoint for this invocation. */
     readonly depth: number;
     readonly count: number;
   };
@@ -42,18 +43,22 @@ export interface MemoryInvocation {
 
 export interface RuntimeLimits {
   readonly maxExecutions?: number;
+  /** Maximum activation hops from an entrypoint, not a memory hierarchy. */
   readonly maxDepth?: number;
   readonly maxVisitsPerMemory?: number;
 }
 
 export interface RecallRequest {
   readonly entrypoints: readonly (MemoryId | MemoryInvocation)[];
+  /** Public context. Names beginning with '__' belong to the runtime. */
   readonly context?: MemoryContext;
+  /** A caller may lower, but cannot raise, the runtime's configured ceilings. */
   readonly limits?: RuntimeLimits;
 }
 
 export interface ExecutionTraceEntry {
   readonly memory: MemoryId;
+  /** Activation hops for this invocation; the same node may have other values. */
   readonly depth: number;
   readonly emissions: number;
 }

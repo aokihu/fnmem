@@ -112,11 +112,20 @@ console.log(result.messages);
 2. **Executable memory is additive.** Retrieval, embeddings and graph stores can select memories; fnmem focuses on what happens when a selected memory executes.
 3. **The public ABI stays small.** v0.1 intentionally supports only text emissions and memory-call emissions.
 4. **Execution must be bounded.** The runtime includes execution, depth and per-memory visit limits.
+   The host configures ceilings; callers may only lower them. A random `__` context field holds the remaining shared budget internally, and caller-supplied `__` fields are rejected. This private field is excluded from normal JSON output and the DSL's readable fields.
 5. **Behavior should be inspectable.** Each recall returns an execution trace so memory activation can be tested and debugged.
 
 ## Project status
 
 **Experimental / v0.1 development.** The core execution model is implemented and covered by initial tests. APIs may change while the functional-memory model is validated with real agents.
+
+The intended memory authoring interface is an independent DSL compiled into Node.js-compatible artifacts. The callbacks above are the current prototype, not the final source format. Development starts with a text-memory comparison harness, followed by the DSL/compiler, observable Memory Runs and a minimal MCP service. See the [development plan](./docs/DEVELOPMENT_PLAN.md).
+
+The evaluation foundation includes eight synthetic development tasks, eight reserved pilot variants, an environment scorer and paired reports. `npm run eval:smoke` validates the harness using identical scripted actions across conditions; it calls no model and does not demonstrate a memory improvement. See the [evaluation protocol](./docs/EVALUATION.md).
+
+Another experimental goal is 100% correct recall consistency across models: compare both fixed queries and model-generated queries against frozen expected results. `npm run eval:consistency -- --plan PLAN.json --records SAMPLES.jsonl` scores this separately from task completion. Real cross-model results remain pending.
+
+Stage two now defines the [DSL v0 language](./docs/DSL.md), its [formal grammar](./docs/dsl-v0.ebnf) and [conformance fixtures](./dsl/README.md). The subset supports typed context/input, read-only working memory, `when`/`if`, Rust-inspired `match` and text/memory emissions. `npm run dsl:check` checks the specification artifacts. Parsing, JavaScript compilation and semantic conformance execution are the next stage; the DSL examples are not runnable yet.
 
 Current scope:
 
@@ -129,14 +138,19 @@ Current scope:
 - execution trace
 - runnable example and tests
 
-Intentionally deferred:
+Upcoming experimental stages:
+
+- DSL parser, static checker and JavaScript compiler
+- versioned, observable Memory Runs
+- minimal MCP recall tool and read-only resources
+
+Deferred pending evidence:
 
 - vector/semantic retrieval
 - persistent storage adapters
 - automatic memory learning
 - graph databases
 - priorities and parallel scheduling
-- MCP / remote adapters
 - model-generated memory functions
 
 ## Relationship to agent frameworks
@@ -184,6 +198,7 @@ Requirements: Node.js 20+ and TypeScript 5.8+.
 npm install
 npm test
 npm run example
+npm run eval:smoke
 ```
 
 ## Contributing

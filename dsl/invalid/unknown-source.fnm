@@ -1,0 +1,1 @@
+language fnmem "0"; memory "x" { if (workingMemory.hasSource("absent")) { emit text "x"; } }

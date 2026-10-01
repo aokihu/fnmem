@@ -1,0 +1,67 @@
+language fnmem "0";
+
+memory "entry-a" {
+  context { enabled: boolean = true; failures: number = 3; }
+  input { label: string = "default"; }
+  if (context.enabled and context.failures >= 3) {
+    emit memory "linked" with { label: input.label };
+    emit text "entry-a:" + input.label;
+    // Own pending text is invisible until this invocation commits.
+    if (workingMemory.hasSource("entry-a")) {
+      emit text "seen earlier entry-a";
+    } else {
+      emit text "no earlier entry-a";
+    }
+    emit memory "followup";
+  } else {
+    emit text "inactive";
+  }
+}
+
+memory "entry-b" {
+  emit text "entry-b";
+}
+
+memory "linked" {
+  input { label: string; }
+  if (workingMemory.hasSource("entry-a") and execution.depth == 1) {
+    emit text "linked:" + input.label;
+  }
+  if (workingMemory.count >= 3 and execution.count == 3) {
+    emit text "third invocation sees at least three texts";
+  }
+}
+
+memory "followup" {
+  if (workingMemory.hasSource("linked")) { emit text "followup after linked"; }
+}
+
+memory "precedence" {
+  if (not false and false or true) { emit text "boolean precedence"; }
+  if (1 < 2 and 2 <= 2 and 3 > 2 and 3 >= 3 and 1 != 2) {
+    emit text "a" + "b" + "c";
+  }
+}
+
+memory "loop" {
+  emit text "visit";
+  emit memory "loop";
+}
+
+memory "trigger" {
+  emit text "committed trigger";
+  emit memory "needs-context";
+}
+
+memory "needs-context" {
+  context { required: boolean; }
+  if (context.required) { emit text "linked"; }
+}
+
+memory "empty" {}
+
+memory "echo" {
+  input { label: string; }
+  emit text input.label;
+  emit text input.label;
+}

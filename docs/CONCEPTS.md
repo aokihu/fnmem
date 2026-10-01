@@ -6,11 +6,17 @@ fnmem distinguishes between **memory content** and **memory behavior**.
 
 A passive memory returns information. A functional memory may return information and activate another memory. This lets remembered procedures participate in an agent's reasoning flow without forcing every behavior into the agent's global prompt.
 
+## Memory graph
+
+All memory definitions are peer nodes in a directed graph. A memory-reference emission creates an activation edge between nodes during recall. A selected entrypoint is just a starting node for that recall; it does not own other memories or establish a permanent level.
+
+Nodes may activate several other nodes, be reached from different nodes, or participate in cycles. The execution queue traverses the activated edges in FIFO order under the shared budget. `execution.depth` counts activation edges from a selected entrypoint for this particular invocation. The same memory may execute at different depths; the number does not assign a hierarchy to its definition.
+
 ## Multiple inputs
 
-v0.1 does not introduce a separate rule language. A memory receives structured `context`, invocation `input`, the current read-only working-memory view, and execution metadata. A memory may evaluate any number of conditions from those inputs.
+The current prototype receives structured `context`, invocation `input`, the read-only working-memory view and execution metadata through a TypeScript callback. The planned authoring interface is an independent DSL compiled into Node.js-compatible artifacts, preserving these multiple inputs and the two emission types.
 
-This keeps "multiple conditions in" expressive without turning fnmem into a general-purpose rules engine.
+The [DSL v0 specification](./DSL.md) now defines grammar, field types, canonical queries and deterministic execution semantics. Its sources and expected traces are ready for the compiler stage; no DSL compiler has been implemented yet. Handwritten callbacks remain examples for discussing and testing behavior during this transition.
 
 ## Multiple outputs
 

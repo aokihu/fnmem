@@ -1,0 +1,3725 @@
+{
+  "schemaVersion": 1,
+  "specVersion": "fnmem-dsl-0",
+  "evidence": "specification-only",
+  "development": {
+    "version": "pilot-1",
+    "sha256": "2684b43d5d8c1afaa7af99e3aa6183e90ea8289862b7862572e352165b8904fb"
+  },
+  "sources": {
+    "examples/branches.fnm": "4f754280141347b3262a3cdbba838828549ee399585a8f47c9c9689650f6235e",
+    "examples/development.fnm": "1e6599cabea989fd2d859dbae3d0f3d25720470a407b18a268422ab5156ef961",
+    "examples/if.fnm": "23d5524141c885bb639c66ec528dff85790c9dc08489cc5f7b94f5c48bcbb67d",
+    "examples/semantics.fnm": "2421032150f2457012dbcaae812755fd726b3ec9597bf126e3ad8afaf4ef2c58",
+    "examples/when.fnm": "aab6d368d2ab81791607902cc13b41f7cf2f06e3dc3bf112f227e8fe05d13848",
+    "invalid/chained-order.fnm": "9afc561d4d2235255daeca4a7115bb2f92a9a768f8bab6089692b0f557b806f8",
+    "invalid/duplicate-argument.fnm": "6106fcc4f39ec5f659e3dd7b6a399d09e59836618df85a2d6f0808ecaa25f5d9",
+    "invalid/duplicate-block.fnm": "db274b350ac789a112c37b2fb1ccd0916b50baf73c9d069e3533f889df944d87",
+    "invalid/duplicate-field.fnm": "49cb065e426adaf9594fd4565af49eb19d418e1555a42c34c7a0896ce0d1e853",
+    "invalid/duplicate-memory.fnm": "db094b13fee8fd4b8a0e0b5dab955d7ae08b9787cd57a2a4e73cdc67f4fef1a8",
+    "invalid/dynamic-reference.fnm": "0cf80fbd1df40c46d9260fe31275a754742dc5dd4f2037b413585d48cef056ed",
+    "invalid/embedded-js.fnm": "fe2cbafb0e3fc1b66be7cbcb0f54dc759e24807d71299824f16183b2ae80e1f3",
+    "invalid/match-after-default.fnm": "97be081ff0880e0982cd7ad4fe93d47125b2720daf3bbfdd9cec87fb43655e63",
+    "invalid/match-boolean-coverage.fnm": "6b34e9af6e60c99dddcd2431a09f06d2eafe6a7a562cb697556cfff0cd8a9de1",
+    "invalid/match-covered-literal.fnm": "19bd6d8f549a371974784d9dfc708e66bc63d3126c9898df0092dd9b91b23be6",
+    "invalid/match-duplicate-alternative.fnm": "6d03bbaa0ebc0a3b8ba36f8b9e0392faa25600eba81578772ed6882d2eed4cd8",
+    "invalid/match-empty.fnm": "3384e05f65576197024a93fa2887b4824f76619b22f280cb94c86b707c66b2b1",
+    "invalid/match-guard-type.fnm": "38d2d2c374cb920f01cd9d25a1a413f2920dfc87c8966c43c6095555b130388b",
+    "invalid/match-guarded-default.fnm": "49a3ffca01239bac43e2f6ac7fe3cbdfa7279915d4998e64d45600e92f155c79",
+    "invalid/match-inactive-type.fnm": "1d7ebd68b21d9989c4ec21973672155c1afe35f4b0206e1f0b0d925143349d27",
+    "invalid/match-missing-comma.fnm": "024abdd5874c460dedaa18369d784e434b4bc9c2ba0d38fa774c10b904efb1ee",
+    "invalid/match-nonexhaustive.fnm": "41390b97f307091e66741a1c67ce00d6f26418c7734e08dd8a115d8cbf78a933",
+    "invalid/match-pattern-binding.fnm": "369faace0341d599520f6311ba1cff2f13effaea1920ac2fd3691db05ce800aa",
+    "invalid/match-pattern-type.fnm": "85eda17542763320badbfd4089233439ec6630a30bec9d01e899490bf1569cbf",
+    "invalid/match-wildcard-alternative.fnm": "12f1f43a85f09221d3115a8a4b84f9409a91c7ea5e6444d9f1b4935a80352405",
+    "invalid/missing-argument.fnm": "24377b2f1089979facad42c1f04378b4e3eb5138afe54e2a393db9cd5399ac5a",
+    "invalid/nonfinite-literal.fnm": "dc7e0aec8574c318b3def9af76a1fe43104dc2426347071637b29f6363c06b6d",
+    "invalid/reserved-argument.fnm": "cae704727d2bb3565e982f2d653aba01fb55492237b868bbb5800fe4c77443d4",
+    "invalid/reserved-context-access.fnm": "f6e52ac4b0403cc79eb171dcb48ca9ad767afa290aec6d5ddba14cee1524ed94",
+    "invalid/reserved-context-declaration.fnm": "19328cb0f4f682e13d51c263bcf84f6ca06dd07d7c6d2350a943a5440c2cbaad",
+    "invalid/reserved-input-access.fnm": "da17d489f97412c2b2280511f174e470a3145b7bc3731018cad9c26094ad63be",
+    "invalid/reserved-input-declaration.fnm": "fe39c8d85fffd996bad7928c6ccb75e3cb92bde8be7f33aecc8f8f37bafc06af",
+    "invalid/syntax.fnm": "c3c96cac194183d7b8f75207807575001b726b01d1890b9c39c2ccf616396eb3",
+    "invalid/unknown-argument.fnm": "95c7488d87d65f3c2316a245a6c014edd7b158b9d34b18124e6d1fb244530137",
+    "invalid/unknown-field.fnm": "2fb4b7dab3db298d5fd063cf77e87064aa231e9b0f3602495bf73f949acc9401",
+    "invalid/unknown-reference.fnm": "a3fc106d0e9a552828d328af4a302e6d7c1b56b5c2789fccff51efe535668a09",
+    "invalid/unknown-source.fnm": "338edd48f114070d53f3856d5e78451561f9302c4972ee72f4dd4e0ccc832479",
+    "invalid/unpaired-surrogate.fnm": "581d222b18097adf79bd260fb8f960eee82a1646712786a0188cfd8144ffd73f",
+    "invalid/unreachable-type.fnm": "07c3764247e2935d959cd3400aa7bd5ad350f4bd577d10f41476161dba990766",
+    "invalid/version.fnm": "35826a9922fa7d870ed7733fe762c6fe07badc71b4eb7845576e731cf05870cb",
+    "invalid/when-condition.fnm": "26d1b17eaf989baeb8b1d3701710a069756fd69f085d7c5fb4a23963d43a531c",
+    "invalid/wrong-argument.fnm": "98fbec1957c087fe7e677dfd9b4397e480f84da1978ecde2738e478e4046cb28",
+    "invalid/wrong-condition.fnm": "1d5ba7c3e552b0555ccbc407c42ed126ac08afefb2be200356f23fb4084750a9",
+    "invalid/wrong-default.fnm": "068706801e3acda8575dae84de770334ed7aa69521437d5d11648c23567a7937",
+    "invalid/wrong-operand.fnm": "784b84eeea976462524f193124f29a0bcb0e21a1d30ee53be110bfac386974da",
+    "invalid/wrong-text.fnm": "faa90c8580dcf51bbef4f32ee1fb436f8f0398ba157c81ab57c3f1ddbfd67439"
+  },
+  "cases": [
+    {
+      "id": "development-recovery-a",
+      "source": "examples/development.fnm",
+      "phase": "recall",
+      "tags": [
+        "development",
+        "repeated-failure"
+      ],
+      "query": {
+        "context": {
+          "failureCount": 3,
+          "hasProxy": true,
+          "periodic": true
+        },
+        "entrypoints": [
+          {
+            "ref": "periodic-disconnect",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "Inspect proxy timeout first. After the check, correct the confirmed setting.",
+            "source": "periodic-disconnect"
+          },
+          {
+            "type": "text",
+            "content": "Repeating reconnect tuning after it failed does not address the cause.",
+            "source": "periodic-disconnect"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "periodic-disconnect",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1
+      },
+      "task": "recovery-a"
+    },
+    {
+      "id": "development-startup-a",
+      "source": "examples/development.fnm",
+      "phase": "recall",
+      "tags": [
+        "development",
+        "repeated-failure"
+      ],
+      "query": {
+        "context": {
+          "failureCount": 2,
+          "portAvailable": true,
+          "error": "access-denied"
+        },
+        "entrypoints": [
+          {
+            "ref": "startup-recovery",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "Inspect data directory permissions before repairing them. Do not keep changing the port after that approach failed.",
+            "source": "startup-recovery"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "startup-recovery",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      },
+      "task": "startup-a"
+    },
+    {
+      "id": "development-upload-a",
+      "source": "examples/development.fnm",
+      "phase": "recall",
+      "tags": [
+        "development",
+        "transfer"
+      ],
+      "query": {
+        "context": {
+          "httpStatus": 413,
+          "requestMb": 7
+        },
+        "entrypoints": [
+          {
+            "ref": "upload-experience",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "At another endpoint, HTTP 413 meant the request exceeded its configured limit. Inspect the current endpoint limit, then reduce the payload to fit it; do not assume the old numeric limit transfers.",
+            "source": "upload-experience"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "upload-experience",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      },
+      "task": "upload-a"
+    },
+    {
+      "id": "development-clock-a",
+      "source": "examples/development.fnm",
+      "phase": "recall",
+      "tags": [
+        "development",
+        "transfer"
+      ],
+      "query": {
+        "context": {
+          "clockShiftDetected": true,
+          "securityRequired": true
+        },
+        "entrypoints": [
+          {
+            "ref": "clock-experience",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "On a previous machine, certificate checks failed because the clock was wrong. Verify current time and correct it. Keep certificate verification enabled.",
+            "source": "clock-experience"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "clock-experience",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      },
+      "task": "clock-a"
+    },
+    {
+      "id": "development-lighting-a",
+      "source": "examples/development.fnm",
+      "phase": "recall",
+      "tags": [
+        "development",
+        "irrelevant-memory"
+      ],
+      "query": {
+        "context": {
+          "requestedShadow": "low",
+          "networkError": false
+        },
+        "entrypoints": [
+          {
+            "ref": "network-tip",
+            "input": {}
+          },
+          {
+            "ref": "lighting-preference",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "When the requested product shadow is low, reduce shadow intensity.",
+            "source": "lighting-preference"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "network-tip",
+            "depth": 0,
+            "emissions": 0
+          },
+          {
+            "memory": "lighting-preference",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 2
+      },
+      "task": "lighting-a"
+    },
+    {
+      "id": "development-branching-a",
+      "source": "examples/development.fnm",
+      "phase": "recall",
+      "tags": [
+        "development",
+        "irrelevant-memory"
+      ],
+      "query": {
+        "context": {
+          "duplicateBranches": true,
+          "uniquePlansRequired": true
+        },
+        "entrypoints": [
+          {
+            "ref": "render-tip",
+            "input": {}
+          },
+          {
+            "ref": "planning-experience",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "When branch results duplicate each other, remove duplicates and retain distinct alternatives. Increasing branch count alone does not supply diversity.",
+            "source": "planning-experience"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "render-tip",
+            "depth": 0,
+            "emissions": 0
+          },
+          {
+            "memory": "planning-experience",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 2
+      },
+      "task": "branching-a"
+    },
+    {
+      "id": "development-preference-a",
+      "source": "examples/development.fnm",
+      "phase": "recall",
+      "tags": [
+        "development",
+        "conflict"
+      ],
+      "query": {
+        "context": {
+          "currentPreference": "low",
+          "scope": "current-task"
+        },
+        "entrypoints": [
+          {
+            "ref": "old-preference",
+            "input": {}
+          },
+          {
+            "ref": "later-preference",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "Historical general preference: high shadows.",
+            "source": "old-preference"
+          },
+          {
+            "type": "text",
+            "content": "Explicit current-task preference: low shadows. This takes precedence over either historical preference.",
+            "source": "later-preference"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "old-preference",
+            "depth": 0,
+            "emissions": 1
+          },
+          {
+            "memory": "later-preference",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 2
+      },
+      "task": "preference-a"
+    },
+    {
+      "id": "development-api-a",
+      "source": "examples/development.fnm",
+      "phase": "recall",
+      "tags": [
+        "development",
+        "conflict"
+      ],
+      "query": {
+        "context": {
+          "apiVersion": "v2"
+        },
+        "entrypoints": [
+          {
+            "ref": "v1-experience",
+            "input": {}
+          },
+          {
+            "ref": "v2-experience",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "For a service configured for API v2, call its v2 endpoint. Match the configured API version rather than assuming the most recent experience applies.",
+            "source": "v2-experience"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "v1-experience",
+            "depth": 0,
+            "emissions": 0
+          },
+          {
+            "memory": "v2-experience",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 2
+      },
+      "task": "api-a"
+    },
+    {
+      "id": "fifo-fanout",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "fifo",
+        "fanout",
+        "forwarding",
+        "snapshot",
+        "execution",
+        "multiple-inputs"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {
+              "label": "alpha"
+            }
+          },
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "entry-a:alpha",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "no earlier entry-a",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "entry-b",
+            "source": "entry-b"
+          },
+          {
+            "type": "text",
+            "content": "linked:alpha",
+            "source": "linked"
+          },
+          {
+            "type": "text",
+            "content": "third invocation sees at least three texts",
+            "source": "linked"
+          },
+          {
+            "type": "text",
+            "content": "followup after linked",
+            "source": "followup"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "entry-a",
+            "depth": 0,
+            "emissions": 4
+          },
+          {
+            "memory": "entry-b",
+            "depth": 0,
+            "emissions": 1
+          },
+          {
+            "memory": "linked",
+            "depth": 1,
+            "emissions": 2
+          },
+          {
+            "memory": "followup",
+            "depth": 1,
+            "emissions": 1
+          }
+        ],
+        "executed": 4
+      }
+    },
+    {
+      "id": "default-input",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "defaults"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "entry-a:default",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "no earlier entry-a",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "linked:default",
+            "source": "linked"
+          },
+          {
+            "type": "text",
+            "content": "followup after linked",
+            "source": "followup"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "entry-a",
+            "depth": 0,
+            "emissions": 4
+          },
+          {
+            "memory": "linked",
+            "depth": 1,
+            "emissions": 1
+          },
+          {
+            "memory": "followup",
+            "depth": 1,
+            "emissions": 1
+          }
+        ],
+        "executed": 3
+      }
+    },
+    {
+      "id": "explicit-default-input",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "explicit-default-query"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {
+              "label": "default"
+            }
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "entry-a:default",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "no earlier entry-a",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "linked:default",
+            "source": "linked"
+          },
+          {
+            "type": "text",
+            "content": "followup after linked",
+            "source": "followup"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "entry-a",
+            "depth": 0,
+            "emissions": 4
+          },
+          {
+            "memory": "linked",
+            "depth": 1,
+            "emissions": 1
+          },
+          {
+            "memory": "followup",
+            "depth": 1,
+            "emissions": 1
+          }
+        ],
+        "executed": 3
+      }
+    },
+    {
+      "id": "disabled",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "else"
+      ],
+      "query": {
+        "context": {
+          "enabled": false
+        },
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "inactive",
+            "source": "entry-a"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "entry-a",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "below-threshold",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "number-condition"
+      ],
+      "query": {
+        "context": {
+          "failures": 2
+        },
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "inactive",
+            "source": "entry-a"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "entry-a",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "precedence",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "operators",
+        "precedence"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "precedence",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "boolean precedence",
+            "source": "precedence"
+          },
+          {
+            "type": "text",
+            "content": "abc",
+            "source": "precedence"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "precedence",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "duplicate-entry-a",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "duplicates",
+        "multiple-inputs"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {
+              "label": "a"
+            }
+          },
+          {
+            "ref": "entry-a",
+            "input": {
+              "label": "b"
+            }
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "entry-a:a",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "no earlier entry-a",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "entry-a:b",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "seen earlier entry-a",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "linked:a",
+            "source": "linked"
+          },
+          {
+            "type": "text",
+            "content": "third invocation sees at least three texts",
+            "source": "linked"
+          },
+          {
+            "type": "text",
+            "content": "followup after linked",
+            "source": "followup"
+          },
+          {
+            "type": "text",
+            "content": "linked:b",
+            "source": "linked"
+          },
+          {
+            "type": "text",
+            "content": "followup after linked",
+            "source": "followup"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "entry-a",
+            "depth": 0,
+            "emissions": 4
+          },
+          {
+            "memory": "entry-a",
+            "depth": 0,
+            "emissions": 4
+          },
+          {
+            "memory": "linked",
+            "depth": 1,
+            "emissions": 2
+          },
+          {
+            "memory": "followup",
+            "depth": 1,
+            "emissions": 1
+          },
+          {
+            "memory": "linked",
+            "depth": 1,
+            "emissions": 1
+          },
+          {
+            "memory": "followup",
+            "depth": 1,
+            "emissions": 1
+          }
+        ],
+        "executed": 6
+      }
+    },
+    {
+      "id": "empty-memory",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "zero-emissions"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "empty",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [],
+        "trace": [
+          {
+            "memory": "empty",
+            "depth": 0,
+            "emissions": 0
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "empty-entrypoints",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "empty-entrypoints"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [],
+        "trace": [],
+        "executed": 0
+      }
+    },
+    {
+      "id": "exact-text",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "unicode",
+        "duplicate-text"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "echo",
+            "input": {
+              "label": "  中文\n\"\\🙂  "
+            }
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "  中文\n\"\\🙂  ",
+            "source": "echo"
+          },
+          {
+            "type": "text",
+            "content": "  中文\n\"\\🙂  ",
+            "source": "echo"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "echo",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "exact-budget",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "exact-budget"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 1,
+          "maxDepth": 0,
+          "maxVisitsPerMemory": 1
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "entry-b",
+            "source": "entry-b"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "entry-b",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "execution-limit",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "cycle",
+        "execution-limit",
+        "partial-failure"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "loop",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 2,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "visit",
+            "source": "loop"
+          },
+          {
+            "type": "text",
+            "content": "visit",
+            "source": "loop"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "loop",
+            "depth": 0,
+            "emissions": 2
+          },
+          {
+            "memory": "loop",
+            "depth": 1,
+            "emissions": 2
+          }
+        ],
+        "executed": 2,
+        "error": {
+          "code": "E_MAX_EXECUTIONS"
+        }
+      }
+    },
+    {
+      "id": "visit-limit",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "visit-limit"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "loop",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 2
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "visit",
+            "source": "loop"
+          },
+          {
+            "type": "text",
+            "content": "visit",
+            "source": "loop"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "loop",
+            "depth": 0,
+            "emissions": 2
+          },
+          {
+            "memory": "loop",
+            "depth": 1,
+            "emissions": 2
+          }
+        ],
+        "executed": 2,
+        "error": {
+          "code": "E_MAX_VISITS"
+        }
+      }
+    },
+    {
+      "id": "depth-limit",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "depth-limit"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "loop",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 1,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "visit",
+            "source": "loop"
+          },
+          {
+            "type": "text",
+            "content": "visit",
+            "source": "loop"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "loop",
+            "depth": 0,
+            "emissions": 2
+          },
+          {
+            "memory": "loop",
+            "depth": 1,
+            "emissions": 2
+          }
+        ],
+        "executed": 2,
+        "error": {
+          "code": "E_MAX_DEPTH"
+        }
+      }
+    },
+    {
+      "id": "limit-precedence",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "limit-precedence"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "loop",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 1,
+          "maxDepth": 0,
+          "maxVisitsPerMemory": 1
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "visit",
+            "source": "loop"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "loop",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1,
+        "error": {
+          "code": "E_MAX_EXECUTIONS"
+        }
+      }
+    },
+    {
+      "id": "linked-context-error",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "linked-validation",
+        "partial-failure"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "trigger",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "committed trigger",
+            "source": "trigger"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "trigger",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1,
+        "error": {
+          "code": "E_INPUT"
+        }
+      }
+    },
+    {
+      "id": "inactive-context",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "inactive-schema"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "empty",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [],
+        "trace": [
+          {
+            "memory": "empty",
+            "depth": 0,
+            "emissions": 0
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "entrypoint-missing-input",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "required-input"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "linked",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_INPUT"
+        }
+      }
+    },
+    {
+      "id": "entrypoint-wrong-type",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "no-coercion"
+      ],
+      "query": {
+        "context": {
+          "failures": "3"
+        },
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_INPUT"
+        }
+      }
+    },
+    {
+      "id": "null-default",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "null-default"
+      ],
+      "query": {
+        "context": {
+          "enabled": null
+        },
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_INPUT"
+        }
+      }
+    },
+    {
+      "id": "unknown-input",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "unknown-input"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {
+              "extra": true
+            }
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_INPUT"
+        }
+      }
+    },
+    {
+      "id": "unknown-context",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "unknown-context"
+      ],
+      "query": {
+        "context": {
+          "extra": {
+            "model": "opaque"
+          }
+        },
+        "entrypoints": [
+          {
+            "ref": "entry-a",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "entry-a:default",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "no earlier entry-a",
+            "source": "entry-a"
+          },
+          {
+            "type": "text",
+            "content": "linked:default",
+            "source": "linked"
+          },
+          {
+            "type": "text",
+            "content": "followup after linked",
+            "source": "followup"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "entry-a",
+            "depth": 0,
+            "emissions": 4
+          },
+          {
+            "memory": "linked",
+            "depth": 1,
+            "emissions": 1
+          },
+          {
+            "memory": "followup",
+            "depth": 1,
+            "emissions": 1
+          }
+        ],
+        "executed": 3
+      }
+    },
+    {
+      "id": "preflight-all-entrypoints",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "preflight"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          },
+          {
+            "ref": "linked",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_INPUT"
+        }
+      }
+    },
+    {
+      "id": "missing-memory",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "missing-memory"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "absent",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_MEMORY_NOT_FOUND"
+        }
+      }
+    },
+    {
+      "id": "invalid-budget",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "invalid-query"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": -1,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_QUERY"
+        }
+      }
+    },
+    {
+      "id": "unknown-query-key",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "invalid-query"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        },
+        "model": "caller"
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_QUERY"
+        }
+      }
+    },
+    {
+      "id": "invalid-syntax",
+      "source": "invalid/syntax.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-version",
+      "source": "invalid/version.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-duplicate-memory",
+      "source": "invalid/duplicate-memory.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_DUPLICATE"
+        }
+      }
+    },
+    {
+      "id": "invalid-duplicate-field",
+      "source": "invalid/duplicate-field.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_DUPLICATE"
+        }
+      }
+    },
+    {
+      "id": "invalid-duplicate-block",
+      "source": "invalid/duplicate-block.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_DUPLICATE"
+        }
+      }
+    },
+    {
+      "id": "invalid-unknown-field",
+      "source": "invalid/unknown-field.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_FIELD"
+        }
+      }
+    },
+    {
+      "id": "invalid-wrong-default",
+      "source": "invalid/wrong-default.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-wrong-condition",
+      "source": "invalid/wrong-condition.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-wrong-operand",
+      "source": "invalid/wrong-operand.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-wrong-text",
+      "source": "invalid/wrong-text.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-unreachable-type",
+      "source": "invalid/unreachable-type.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-unknown-reference",
+      "source": "invalid/unknown-reference.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_REFERENCE"
+        }
+      }
+    },
+    {
+      "id": "invalid-dynamic-reference",
+      "source": "invalid/dynamic-reference.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_REFERENCE"
+        }
+      }
+    },
+    {
+      "id": "invalid-unknown-source",
+      "source": "invalid/unknown-source.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_REFERENCE"
+        }
+      }
+    },
+    {
+      "id": "invalid-missing-argument",
+      "source": "invalid/missing-argument.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_ARGUMENT"
+        }
+      }
+    },
+    {
+      "id": "invalid-unknown-argument",
+      "source": "invalid/unknown-argument.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_ARGUMENT"
+        }
+      }
+    },
+    {
+      "id": "invalid-wrong-argument",
+      "source": "invalid/wrong-argument.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-duplicate-argument",
+      "source": "invalid/duplicate-argument.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_DUPLICATE"
+        }
+      }
+    },
+    {
+      "id": "invalid-embedded-js",
+      "source": "invalid/embedded-js.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-unpaired-surrogate",
+      "source": "invalid/unpaired-surrogate.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-nonfinite-literal",
+      "source": "invalid/nonfinite-literal.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-chained-order",
+      "source": "invalid/chained-order.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-when-condition",
+      "source": "invalid/when-condition.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "when-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-nonexhaustive",
+      "source": "invalid/match-nonexhaustive.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_MATCH"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-guarded-default",
+      "source": "invalid/match-guarded-default.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_MATCH"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-boolean-coverage",
+      "source": "invalid/match-boolean-coverage.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_MATCH"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-after-default",
+      "source": "invalid/match-after-default.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_MATCH"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-covered-literal",
+      "source": "invalid/match-covered-literal.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_MATCH"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-duplicate-alternative",
+      "source": "invalid/match-duplicate-alternative.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_DUPLICATE"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-pattern-type",
+      "source": "invalid/match-pattern-type.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-guard-type",
+      "source": "invalid/match-guard-type.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-missing-comma",
+      "source": "invalid/match-missing-comma.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-wildcard-alternative",
+      "source": "invalid/match-wildcard-alternative.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-pattern-binding",
+      "source": "invalid/match-pattern-binding.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-empty",
+      "source": "invalid/match-empty.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_SYNTAX"
+        }
+      }
+    },
+    {
+      "id": "invalid-match-inactive-type",
+      "source": "invalid/match-inactive-type.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "match-invalid"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_TYPE"
+        }
+      }
+    },
+    {
+      "id": "alias-if-true",
+      "source": "examples/if.fnm",
+      "phase": "recall",
+      "tags": [
+        "when-alias"
+      ],
+      "query": {
+        "context": {
+          "enabled": true
+        },
+        "entrypoints": [
+          {
+            "ref": "condition",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "enabled",
+            "source": "condition"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "condition",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "alias-when-true",
+      "source": "examples/when.fnm",
+      "phase": "recall",
+      "tags": [
+        "when-alias"
+      ],
+      "query": {
+        "context": {
+          "enabled": true
+        },
+        "entrypoints": [
+          {
+            "ref": "condition",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "enabled",
+            "source": "condition"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "condition",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      },
+      "equivalentTo": "alias-if-true"
+    },
+    {
+      "id": "alias-if-false",
+      "source": "examples/if.fnm",
+      "phase": "recall",
+      "tags": [
+        "when-alias"
+      ],
+      "query": {
+        "context": {
+          "enabled": false
+        },
+        "entrypoints": [
+          {
+            "ref": "condition",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "disabled",
+            "source": "condition"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "condition",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "alias-when-false",
+      "source": "examples/when.fnm",
+      "phase": "recall",
+      "tags": [
+        "when-alias"
+      ],
+      "query": {
+        "context": {
+          "enabled": false
+        },
+        "entrypoints": [
+          {
+            "ref": "condition",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "disabled",
+            "source": "condition"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "condition",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      },
+      "equivalentTo": "alias-if-false"
+    },
+    {
+      "id": "chain-3",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "else-chain"
+      ],
+      "query": {
+        "context": {
+          "failures": 3
+        },
+        "entrypoints": [
+          {
+            "ref": "chain",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "change strategy",
+            "source": "chain"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "chain",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "chain-2",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "else-chain"
+      ],
+      "query": {
+        "context": {
+          "failures": 2
+        },
+        "entrypoints": [
+          {
+            "ref": "chain",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check hypothesis",
+            "source": "chain"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "chain",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "chain-1",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "else-chain"
+      ],
+      "query": {
+        "context": {
+          "failures": 1
+        },
+        "entrypoints": [
+          {
+            "ref": "chain",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "observe",
+            "source": "chain"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "chain",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "chain-0",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "else-chain"
+      ],
+      "query": {
+        "context": {
+          "failures": 0
+        },
+        "entrypoints": [
+          {
+            "ref": "chain",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "no failures",
+            "source": "chain"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "chain",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "independent-when",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "independent-conditions"
+      ],
+      "query": {
+        "context": {
+          "failures": 3
+        },
+        "entrypoints": [
+          {
+            "ref": "independent",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check hypothesis",
+            "source": "independent"
+          },
+          {
+            "type": "text",
+            "content": "change strategy",
+            "source": "independent"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "independent",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-proxy-timeout",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-alternatives",
+        "match-guard",
+        "match-first"
+      ],
+      "query": {
+        "context": {
+          "error": "timeout",
+          "hasProxy": true
+        },
+        "entrypoints": [
+          {
+            "ref": "route",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check proxy",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "routing complete",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "inspect proxy",
+            "source": "advice"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "route",
+            "depth": 0,
+            "emissions": 3
+          },
+          {
+            "memory": "advice",
+            "depth": 1,
+            "emissions": 1
+          }
+        ],
+        "executed": 2
+      }
+    },
+    {
+      "id": "match-proxy-reset",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-alternatives"
+      ],
+      "query": {
+        "context": {
+          "error": "connection-reset",
+          "hasProxy": true
+        },
+        "entrypoints": [
+          {
+            "ref": "route",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check proxy",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "routing complete",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "inspect proxy",
+            "source": "advice"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "route",
+            "depth": 0,
+            "emissions": 3
+          },
+          {
+            "memory": "advice",
+            "depth": 1,
+            "emissions": 1
+          }
+        ],
+        "executed": 2
+      }
+    },
+    {
+      "id": "match-guard-false",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-guard"
+      ],
+      "query": {
+        "context": {
+          "error": "timeout",
+          "hasProxy": false
+        },
+        "entrypoints": [
+          {
+            "ref": "route",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check timeout",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "routing complete",
+            "source": "route"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "route",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-guard-fallback",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-fallback"
+      ],
+      "query": {
+        "context": {
+          "error": "connection-reset",
+          "hasProxy": false
+        },
+        "entrypoints": [
+          {
+            "ref": "route",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "collect evidence",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "routing complete",
+            "source": "route"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "route",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-default-input",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-guard"
+      ],
+      "query": {
+        "context": {
+          "error": "timeout"
+        },
+        "entrypoints": [
+          {
+            "ref": "route",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check timeout",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "routing complete",
+            "source": "route"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "route",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-permissions",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-call"
+      ],
+      "query": {
+        "context": {
+          "error": "access-denied"
+        },
+        "entrypoints": [
+          {
+            "ref": "route",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "routing complete",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "inspect permissions",
+            "source": "advice"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "route",
+            "depth": 0,
+            "emissions": 2
+          },
+          {
+            "memory": "advice",
+            "depth": 1,
+            "emissions": 1
+          }
+        ],
+        "executed": 2
+      }
+    },
+    {
+      "id": "match-unknown",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-fallback"
+      ],
+      "query": {
+        "context": {
+          "error": "unknown"
+        },
+        "entrypoints": [
+          {
+            "ref": "route",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "collect evidence",
+            "source": "route"
+          },
+          {
+            "type": "text",
+            "content": "routing complete",
+            "source": "route"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "route",
+            "depth": 0,
+            "emissions": 2
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-condition-both",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-first",
+        "match-guard"
+      ],
+      "query": {
+        "context": {
+          "failures": 3,
+          "hasProxy": true
+        },
+        "entrypoints": [
+          {
+            "ref": "first-condition",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "change strategy",
+            "source": "first-condition"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "first-condition",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-condition-proxy",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-first",
+        "match-guard"
+      ],
+      "query": {
+        "context": {
+          "failures": 2,
+          "hasProxy": true
+        },
+        "entrypoints": [
+          {
+            "ref": "first-condition",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check proxy",
+            "source": "first-condition"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "first-condition",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-condition-silent",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-first",
+        "match-guard"
+      ],
+      "query": {
+        "context": {
+          "failures": 2,
+          "hasProxy": false
+        },
+        "entrypoints": [
+          {
+            "ref": "first-condition",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [],
+        "trace": [
+          {
+            "memory": "first-condition",
+            "depth": 0,
+            "emissions": 0
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-boolean-true",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-boolean"
+      ],
+      "query": {
+        "context": {
+          "enabled": true
+        },
+        "entrypoints": [
+          {
+            "ref": "boolean-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "enabled",
+            "source": "boolean-match"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "boolean-match",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-boolean-false",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-boolean"
+      ],
+      "query": {
+        "context": {
+          "enabled": false
+        },
+        "entrypoints": [
+          {
+            "ref": "boolean-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "disabled",
+            "source": "boolean-match"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "boolean-match",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-number-401",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-number"
+      ],
+      "query": {
+        "context": {
+          "code": 401
+        },
+        "entrypoints": [
+          {
+            "ref": "number-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check authorization",
+            "source": "number-match"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "number-match",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-number-403",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-number"
+      ],
+      "query": {
+        "context": {
+          "code": 403
+        },
+        "entrypoints": [
+          {
+            "ref": "number-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check authorization",
+            "source": "number-match"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "number-match",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-number-413",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-number"
+      ],
+      "query": {
+        "context": {
+          "code": 413
+        },
+        "entrypoints": [
+          {
+            "ref": "number-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check request size",
+            "source": "number-match"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "number-match",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-number-500",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-number"
+      ],
+      "query": {
+        "context": {
+          "code": 500
+        },
+        "entrypoints": [
+          {
+            "ref": "number-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "collect evidence",
+            "source": "number-match"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "number-match",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-nested-proxy",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-nested"
+      ],
+      "query": {
+        "context": {
+          "error": "timeout",
+          "hasProxy": true
+        },
+        "entrypoints": [
+          {
+            "ref": "nested-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check proxy",
+            "source": "nested-match"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "nested-match",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-nested-direct",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-nested"
+      ],
+      "query": {
+        "context": {
+          "error": "timeout",
+          "hasProxy": false
+        },
+        "entrypoints": [
+          {
+            "ref": "nested-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [
+          {
+            "type": "text",
+            "content": "check timeout",
+            "source": "nested-match"
+          }
+        ],
+        "trace": [
+          {
+            "memory": "nested-match",
+            "depth": 0,
+            "emissions": 1
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "match-nested-silent",
+      "source": "examples/branches.fnm",
+      "phase": "recall",
+      "tags": [
+        "match-nested"
+      ],
+      "query": {
+        "context": {
+          "error": "unknown",
+          "hasProxy": false
+        },
+        "entrypoints": [
+          {
+            "ref": "nested-match",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "completed",
+        "messages": [],
+        "trace": [
+          {
+            "memory": "nested-match",
+            "depth": 0,
+            "emissions": 0
+          }
+        ],
+        "executed": 1
+      }
+    },
+    {
+      "id": "invalid-reserved-context-declaration",
+      "source": "invalid/reserved-context-declaration.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "reserved-declaration"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_RESERVED"
+        }
+      }
+    },
+    {
+      "id": "invalid-reserved-input-declaration",
+      "source": "invalid/reserved-input-declaration.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "reserved-declaration"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_RESERVED"
+        }
+      }
+    },
+    {
+      "id": "invalid-reserved-context-access",
+      "source": "invalid/reserved-context-access.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "reserved-access"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_RESERVED"
+        }
+      }
+    },
+    {
+      "id": "invalid-reserved-input-access",
+      "source": "invalid/reserved-input-access.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "reserved-access"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_RESERVED"
+        }
+      }
+    },
+    {
+      "id": "invalid-reserved-argument",
+      "source": "invalid/reserved-argument.fnm",
+      "phase": "compile",
+      "tags": [
+        "invalid-source",
+        "reserved-argument"
+      ],
+      "expected": {
+        "status": "rejected",
+        "error": {
+          "code": "E_RESERVED"
+        }
+      }
+    },
+    {
+      "id": "reserved-context-query",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "reserved-query"
+      ],
+      "query": {
+        "context": {
+          "__budget": 999
+        },
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_QUERY"
+        }
+      }
+    },
+    {
+      "id": "reserved-context-prefix",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "reserved-query"
+      ],
+      "query": {
+        "context": {
+          "__": 999
+        },
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_QUERY"
+        }
+      }
+    },
+    {
+      "id": "reserved-input-query",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "reserved-query"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {
+              "__budget": 999
+            }
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_QUERY"
+        }
+      }
+    },
+    {
+      "id": "exceeds-ceiling-maxExecutions",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "runtime-ceiling"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 33,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_QUERY"
+        }
+      }
+    },
+    {
+      "id": "exceeds-ceiling-maxDepth",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "runtime-ceiling"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 9,
+          "maxVisitsPerMemory": 4
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_QUERY"
+        }
+      }
+    },
+    {
+      "id": "exceeds-ceiling-maxVisitsPerMemory",
+      "source": "examples/semantics.fnm",
+      "phase": "recall",
+      "tags": [
+        "runtime-ceiling"
+      ],
+      "query": {
+        "context": {},
+        "entrypoints": [
+          {
+            "ref": "entry-b",
+            "input": {}
+          }
+        ],
+        "limits": {
+          "maxExecutions": 32,
+          "maxDepth": 8,
+          "maxVisitsPerMemory": 5
+        }
+      },
+      "expected": {
+        "status": "failed",
+        "messages": [],
+        "trace": [],
+        "executed": 0,
+        "error": {
+          "code": "E_QUERY"
+        }
+      }
+    }
+  ],
+  "specRevision": "runtime-budget-1",
+  "runtimeCeilings": {
+    "maxExecutions": 32,
+    "maxDepth": 8,
+    "maxVisitsPerMemory": 4
+  }
+}

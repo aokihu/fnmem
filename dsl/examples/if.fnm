@@ -1,0 +1,6 @@
+language fnmem "0";
+memory "condition" {
+  context { enabled: boolean; }
+  if (context.enabled) { emit text "enabled"; }
+  else { emit text "disabled"; }
+}

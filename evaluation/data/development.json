@@ -1,0 +1,567 @@
+{
+  "version": "pilot-1",
+  "split": "development",
+  "tasks": [
+    {
+      "id": "recovery-a",
+      "category": "repeated-failure",
+      "prompt": "A WebSocket connection behind a proxy drops every 60 seconds. Reconnect tuning has already failed. Restore a stable connection.",
+      "context": {
+        "failureCount": 3,
+        "hasProxy": true,
+        "periodic": true
+      },
+      "actions": [
+        {
+          "id": "tune-reconnect",
+          "description": "Retune reconnect delay"
+        },
+        {
+          "id": "check-proxy",
+          "description": "Inspect reverse proxy timeout"
+        },
+        {
+          "id": "fix-proxy",
+          "description": "Correct proxy timeout"
+        },
+        {
+          "id": "check-heartbeat",
+          "description": "Inspect heartbeat interval"
+        }
+      ],
+      "memories": [
+        {
+          "id": "periodic-disconnect",
+          "text": "For periodic disconnections, inspect proxy timeout first when a reverse proxy exists; otherwise inspect heartbeat. After the check, correct the confirmed setting. Repeating reconnect tuning after it failed does not address the cause."
+        }
+      ],
+      "selectedMemories": [
+        "periodic-disconnect"
+      ],
+      "priorFailures": [
+        "tune-reconnect"
+      ],
+      "environment": {
+        "initial": "s0",
+        "goals": [
+          "done"
+        ],
+        "states": {
+          "s0": {
+            "tune-reconnect": {
+              "observation": "Retune reconnect delay did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "check-proxy": {
+              "observation": "The check confirms the condition described by the selected experience.",
+              "next": "s1",
+              "effective": true
+            },
+            "fix-proxy": {
+              "observation": "Correct proxy timeout did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "check-heartbeat": {
+              "observation": "Inspect heartbeat interval did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            }
+          },
+          "s1": {
+            "tune-reconnect": {
+              "observation": "Retune reconnect delay did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            },
+            "check-proxy": {
+              "observation": "Inspect reverse proxy timeout did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            },
+            "fix-proxy": {
+              "observation": "The requested task is complete.",
+              "next": "done",
+              "effective": true
+            },
+            "check-heartbeat": {
+              "observation": "Inspect heartbeat interval did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            }
+          },
+          "done": {}
+        }
+      }
+    },
+    {
+      "id": "startup-a",
+      "category": "repeated-failure",
+      "prompt": "A service cannot write its data directory. Changing the port has already failed. Restore service startup.",
+      "context": {
+        "failureCount": 2,
+        "portAvailable": true,
+        "error": "access-denied"
+      },
+      "actions": [
+        {
+          "id": "change-port",
+          "description": "Change service port"
+        },
+        {
+          "id": "check-access",
+          "description": "Inspect data directory permissions"
+        },
+        {
+          "id": "repair-access",
+          "description": "Repair the confirmed directory permissions"
+        }
+      ],
+      "memories": [
+        {
+          "id": "startup-recovery",
+          "text": "If the port is available and startup reports access denied, inspect data directory permissions before repairing them. Do not keep changing the port after that approach failed."
+        }
+      ],
+      "selectedMemories": [
+        "startup-recovery"
+      ],
+      "priorFailures": [
+        "change-port"
+      ],
+      "environment": {
+        "initial": "s0",
+        "goals": [
+          "done"
+        ],
+        "states": {
+          "s0": {
+            "change-port": {
+              "observation": "Change service port did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "check-access": {
+              "observation": "The check confirms the condition described by the selected experience.",
+              "next": "s1",
+              "effective": true
+            },
+            "repair-access": {
+              "observation": "Repair the confirmed directory permissions did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            }
+          },
+          "s1": {
+            "change-port": {
+              "observation": "Change service port did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            },
+            "check-access": {
+              "observation": "Inspect data directory permissions did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            },
+            "repair-access": {
+              "observation": "The requested task is complete.",
+              "next": "done",
+              "effective": true
+            }
+          },
+          "done": {}
+        }
+      }
+    },
+    {
+      "id": "upload-a",
+      "category": "transfer",
+      "prompt": "A new upload endpoint rejects a 7 MB request with HTTP 413. Make an accepted upload.",
+      "context": {
+        "httpStatus": 413,
+        "requestMb": 7
+      },
+      "actions": [
+        {
+          "id": "retry-upload",
+          "description": "Retry the same payload"
+        },
+        {
+          "id": "inspect-limit",
+          "description": "Read endpoint request-size limit"
+        },
+        {
+          "id": "resize-payload",
+          "description": "Reduce payload to the confirmed limit"
+        }
+      ],
+      "memories": [
+        {
+          "id": "upload-experience",
+          "text": "At another endpoint, HTTP 413 meant the request exceeded its configured limit. Inspect the current endpoint limit, then reduce the payload to fit it; do not assume the old numeric limit transfers."
+        }
+      ],
+      "selectedMemories": [
+        "upload-experience"
+      ],
+      "priorFailures": [],
+      "environment": {
+        "initial": "s0",
+        "goals": [
+          "done"
+        ],
+        "states": {
+          "s0": {
+            "retry-upload": {
+              "observation": "Retry the same payload did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "inspect-limit": {
+              "observation": "The check confirms the condition described by the selected experience.",
+              "next": "s1",
+              "effective": true
+            },
+            "resize-payload": {
+              "observation": "Reduce payload to the confirmed limit did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            }
+          },
+          "s1": {
+            "retry-upload": {
+              "observation": "Retry the same payload did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            },
+            "inspect-limit": {
+              "observation": "Read endpoint request-size limit did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            },
+            "resize-payload": {
+              "observation": "The requested task is complete.",
+              "next": "done",
+              "effective": true
+            }
+          },
+          "done": {}
+        }
+      }
+    },
+    {
+      "id": "clock-a",
+      "category": "transfer",
+      "prompt": "A different machine rejects certificate verification after a large system clock shift. Restore verification without disabling it.",
+      "context": {
+        "clockShiftDetected": true,
+        "securityRequired": true
+      },
+      "actions": [
+        {
+          "id": "disable-verification",
+          "description": "Disable certificate verification"
+        },
+        {
+          "id": "check-clock",
+          "description": "Inspect system time against a trusted clock"
+        },
+        {
+          "id": "sync-clock",
+          "description": "Correct confirmed clock skew"
+        }
+      ],
+      "memories": [
+        {
+          "id": "clock-experience",
+          "text": "On a previous machine, certificate checks failed because the clock was wrong. If clock skew is observed, verify current time and correct it. Keep certificate verification enabled."
+        }
+      ],
+      "selectedMemories": [
+        "clock-experience"
+      ],
+      "priorFailures": [],
+      "environment": {
+        "initial": "s0",
+        "goals": [
+          "done"
+        ],
+        "states": {
+          "s0": {
+            "disable-verification": {
+              "observation": "Disable certificate verification did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "check-clock": {
+              "observation": "The check confirms the condition described by the selected experience.",
+              "next": "s1",
+              "effective": true
+            },
+            "sync-clock": {
+              "observation": "Correct confirmed clock skew did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            }
+          },
+          "s1": {
+            "disable-verification": {
+              "observation": "Disable certificate verification did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            },
+            "check-clock": {
+              "observation": "Inspect system time against a trusted clock did not resolve the task in the current state.",
+              "next": "s1",
+              "effective": false
+            },
+            "sync-clock": {
+              "observation": "The requested task is complete.",
+              "next": "done",
+              "effective": true
+            }
+          },
+          "done": {}
+        }
+      }
+    },
+    {
+      "id": "lighting-a",
+      "category": "irrelevant-memory",
+      "prompt": "Adjust the product render to the requested low-shadow lighting.",
+      "context": {
+        "requestedShadow": "low",
+        "networkError": false
+      },
+      "actions": [
+        {
+          "id": "change-proxy",
+          "description": "Change network proxy"
+        },
+        {
+          "id": "increase-shadow",
+          "description": "Increase product shadow"
+        },
+        {
+          "id": "reduce-shadow",
+          "description": "Reduce product shadow"
+        }
+      ],
+      "memories": [
+        {
+          "id": "network-tip",
+          "text": "When network requests fail behind a proxy, inspect proxy settings."
+        },
+        {
+          "id": "lighting-preference",
+          "text": "When the requested product shadow is low, reduce shadow intensity."
+        }
+      ],
+      "selectedMemories": [
+        "network-tip",
+        "lighting-preference"
+      ],
+      "priorFailures": [],
+      "environment": {
+        "initial": "s0",
+        "goals": [
+          "done"
+        ],
+        "states": {
+          "s0": {
+            "change-proxy": {
+              "observation": "Change network proxy did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "increase-shadow": {
+              "observation": "Increase product shadow did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "reduce-shadow": {
+              "observation": "The requested task is complete.",
+              "next": "done",
+              "effective": true
+            }
+          },
+          "done": {}
+        }
+      }
+    },
+    {
+      "id": "branching-a",
+      "category": "irrelevant-memory",
+      "prompt": "A planning session has many duplicate branches. Produce a set of distinct candidate plans.",
+      "context": {
+        "duplicateBranches": true,
+        "uniquePlansRequired": true
+      },
+      "actions": [
+        {
+          "id": "increase-branches",
+          "description": "Add more duplicate branches"
+        },
+        {
+          "id": "change-lighting",
+          "description": "Change product lighting"
+        },
+        {
+          "id": "deduplicate",
+          "description": "Remove duplicate plans and retain distinct alternatives"
+        }
+      ],
+      "memories": [
+        {
+          "id": "render-tip",
+          "text": "For low-shadow product images, reduce shadow intensity."
+        },
+        {
+          "id": "planning-experience",
+          "text": "When branch results duplicate each other, remove duplicates and retain distinct alternatives. Increasing branch count alone does not supply diversity."
+        }
+      ],
+      "selectedMemories": [
+        "render-tip",
+        "planning-experience"
+      ],
+      "priorFailures": [],
+      "environment": {
+        "initial": "s0",
+        "goals": [
+          "done"
+        ],
+        "states": {
+          "s0": {
+            "increase-branches": {
+              "observation": "Add more duplicate branches did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "change-lighting": {
+              "observation": "Change product lighting did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "deduplicate": {
+              "observation": "The requested task is complete.",
+              "next": "done",
+              "effective": true
+            }
+          },
+          "done": {}
+        }
+      }
+    },
+    {
+      "id": "preference-a",
+      "category": "conflict",
+      "prompt": "The user explicitly requests low-shadow lighting for this task. Apply that setting.",
+      "context": {
+        "currentPreference": "low",
+        "scope": "current-task"
+      },
+      "actions": [
+        {
+          "id": "set-high",
+          "description": "Set high shadow intensity"
+        },
+        {
+          "id": "set-low",
+          "description": "Set low shadow intensity"
+        }
+      ],
+      "memories": [
+        {
+          "id": "old-preference",
+          "text": "Historical general preference: high shadows."
+        },
+        {
+          "id": "later-preference",
+          "text": "Later general preference: low shadows. An explicit current-task preference takes precedence over either historical preference."
+        }
+      ],
+      "selectedMemories": [
+        "old-preference",
+        "later-preference"
+      ],
+      "priorFailures": [],
+      "environment": {
+        "initial": "s0",
+        "goals": [
+          "done"
+        ],
+        "states": {
+          "s0": {
+            "set-high": {
+              "observation": "Set high shadow intensity did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "set-low": {
+              "observation": "The requested task is complete.",
+              "next": "done",
+              "effective": true
+            }
+          },
+          "done": {}
+        }
+      }
+    },
+    {
+      "id": "api-a",
+      "category": "conflict",
+      "prompt": "Call a service explicitly configured for API v2. Use a compatible endpoint.",
+      "context": {
+        "apiVersion": "v2"
+      },
+      "actions": [
+        {
+          "id": "call-v1",
+          "description": "Call the v1 endpoint"
+        },
+        {
+          "id": "call-v2",
+          "description": "Call the v2 endpoint"
+        }
+      ],
+      "memories": [
+        {
+          "id": "v1-experience",
+          "text": "For a service configured for API v1, call its v1 endpoint."
+        },
+        {
+          "id": "v2-experience",
+          "text": "For a service configured for API v2, call its v2 endpoint. Match the configured API version rather than assuming the most recent experience applies."
+        }
+      ],
+      "selectedMemories": [
+        "v1-experience",
+        "v2-experience"
+      ],
+      "priorFailures": [],
+      "environment": {
+        "initial": "s0",
+        "goals": [
+          "done"
+        ],
+        "states": {
+          "s0": {
+            "call-v1": {
+              "observation": "Call the v1 endpoint did not resolve the task in the current state.",
+              "next": "s0",
+              "effective": false
+            },
+            "call-v2": {
+              "observation": "The requested task is complete.",
+              "next": "done",
+              "effective": true
+            }
+          },
+          "done": {}
+        }
+      }
+    }
+  ]
+}
