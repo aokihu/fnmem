@@ -21,13 +21,13 @@ Memory definitions are peer graph nodes. Emitted references describe directed ac
 
 ## Execution algorithm
 
-1. Normalize recall entrypoints into a FIFO queue.
-2. Load a `MemoryFunction` from `MemoryStore`.
-3. Execute it with context, invocation input and a read-only working-memory view.
-4. Append text emissions to working memory.
-5. Append memory-call emissions to the queue.
-6. Repeat until the queue is empty.
-7. Return buffered text and an execution trace.
+1. Validate and snapshot the query; snapshot the store when supported. Preflight every selected entrypoint and its field schemas.
+2. Check the next queued invocation against execution, hop and visit limits.
+3. Load its compiled function and validate its own context/input schemas.
+4. Execute with immutable context/input, execution metadata and a working-memory snapshot.
+5. Validate all local emissions, then atomically commit the invocation and trace. Append text to working memory and memory references to the FIFO queue.
+6. Repeat until the queue is empty; return buffered text and the committed trace.
+7. On failure, stop and attach the committed partial result and failing reference/hop count to the error. Partial output is diagnostic only.
 
 Execution is bounded by three independent limits:
 
@@ -41,10 +41,18 @@ The trusted host configures ceilings through `new MemoryRuntime(store, limits)`;
 
 ## DSL compilation boundary
 
-The [DSL v0 specification](./DSL.md) preserves FIFO scheduling and both emission types. Stage three adds parsing, static types and a JavaScript backend before the existing `MemoryFunction` execution boundary. Authors supply DSL source; the compiler creates the functions. This is specified but not implemented.
+The [DSL v0 compiler](./DSL.md) parses and checks source before emitting JavaScript at the `MemoryFunction` boundary. Authors supply DSL source; the compiler creates the functions. Artifacts carry source SHA-256, language/spec and compiler/runtime versions. Loading regenerates the artifact from source and verifies every field before importing the generated module.
 
-The compiler/runtime must additionally validate canonical queries and field schemas, snapshot definitions and input data, supply a read-only working-memory snapshot per invocation and retain diagnostic partial data on failure. Source/version identity must be available to the later Memory Run layer. No model call is part of recall execution.
+`parseRecallQuery` enforces the canonical raw JSON boundary, including duplicate-key rejection. Runtime schema validation, immutable inputs/working memory and diagnostic partial failures are implemented. Compiled bundles are immutable; `InMemoryStore.snapshot()` fixes definitions for each recall. Other stores can provide the optional snapshot method and must supply stable definitions if they require the same guarantee. No model call is part of recall execution.
+
+## Observable Run boundary
+
+`MemoryRunService` wraps verified compiled artifacts and `MemoryRuntime.recallObserved()`. It saves terminal completed/failed records before returning `fnmem://run/{id}`. The existing compact recall result is preserved; detailed observations add distinct invocation IDs, resolved inputs/public context, validated emissions and directed activation edges. Failure records retain only committed outputs, plus blocked and pending calls.
+
+`FileMemoryRunStore` persists insert-only JSON envelopes with stable content hashes and atomic publication. Reading requires no execution and works across process restarts. Replay verifies the saved artifact, reuses saved input/host ceilings and saves a new Run with a semantic comparison result. Versioned judgments and host evidence can accompany a Run. See [MEMORY_RUNS.md](./MEMORY_RUNS.md) for API and storage limits.
 
 ## Deliberate omissions
 
-The runtime does not currently own retrieval ranking, embedding generation, persistence, model calls, tool execution, or agent state. Those can be supplied by future adapters while the execution core remains deterministic and testable.
+The [MCP adapter](./MCP.md) wraps the same immutable bundle and Run service with a recall tool and read-only definitions/Run resources. Default stdio serves an agent-owned process; explicit HTTP uses per-request protocol instances with shared definition/storage state. Recall inputs, limits and Run identity remain isolated per query.
+
+The execution core does not own retrieval ranking, embedding generation, model calls, external tool execution or agent state. Run persistence belongs to the service/store boundary. Memory formation is the next stage.

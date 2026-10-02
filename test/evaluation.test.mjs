@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { parseSuite } from "../dist/evaluation/tasks.js";
 import { getTextMemory, runTrial, scoreTrial } from "../dist/evaluation/benchmark.js";
 import { createReport } from "../dist/evaluation/report.js";
+import { compileMemorySource, loadMemoryArtifact } from "../dist/src/index.js";
 
 const source = await readFile(new URL("../evaluation/data/development.json", import.meta.url), "utf8");
 const suiteHash = createHash("sha256").update(source).digest("hex");
@@ -68,7 +69,30 @@ test("agent sees the same public state and text baseline, without environment or
   } } });
   assert.equal(scoreTrial(task, record).success, true);
   assert.equal(task.context.failureCount, 3);
-  await assert.rejects(() => trial(task, [], { condition: "dsl", configuration: { ...config, conditions: ["text", "dsl"] } }), /requires the compiler/);
+  await assert.rejects(() => trial(task, [], { condition: "dsl", configuration: { ...config, conditions: ["text", "dsl"] } }), /requires a verified compiled bundle/);
+});
+
+test("DSL trials use verified compilation and retain failed recall without exposing partial memory", async () => {
+  const dsl = await loadMemoryArtifact(await compileMemorySource(await readFile(new URL("../dsl/examples/development.fnm", import.meta.url), "utf8")));
+  const task = suite.tasks[0];
+  const configuration = { ...config, conditions: ["text", "dsl"] };
+  let calls = 0;
+  const record = await trial(task, [], { condition: "dsl", dsl, configuration, agent: { async act(input) {
+    assert.match(input.memory, /Inspect proxy timeout/);
+    assert.deepEqual(input.task.context, task.context);
+    return { action: trajectories[task.id].success[calls++] };
+  } } });
+  assert.equal(scoreTrial(task, record).success, true);
+  assert.equal(record.memory.dsl.sourceHash, dsl.artifact.sourceHash);
+  assert.equal(record.memory.dsl.recall.status, "completed");
+  assert.throws(() => scoreTrial(task, { ...record, memory: { ...record.memory, text: "forged" } }), /content was modified/);
+  const failureTask = { ...task, context: {} };
+  const failed = await trial(failureTask, [], { condition: "dsl", dsl, configuration, agent: { async act() { assert.fail("An invalid recall must not call the agent"); } } });
+  assert.equal(failed.termination, "error");
+  assert.equal(failed.memory.dsl.recall.status, "failed");
+  assert.equal(scoreTrial(failureTask, failed).success, false);
+  assert.equal(failed.memory.text, "");
+  assert.equal(failed.steps.length, 0);
 });
 
 test("prior and newly observed failures count as repeats only in the same state", async () => {

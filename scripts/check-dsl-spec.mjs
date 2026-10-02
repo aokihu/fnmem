@@ -140,7 +140,7 @@ async function main() {
     assert(tags.has(tag), `Missing internal-budget coverage: ${tag}`);
   }
   console.log(JSON.stringify({ evidence: fixture.evidence, sources: usedSources.size, cases: ids.size, developmentTasks: coveredTasks.size, completedExpectations: completed, recallFailureExpectations: recallFailures, compileRejectionExpectations: compileRejections }, null, 2));
-  console.log("Artifact checks passed. DSL parsing, compilation and execution remain unverified until stage three.");
+  console.log("Artifact checks passed. This command checks inventory only; use npm run dsl:test for compiled semantic conformance.");
 }
 
 main().catch((error) => { console.error(error.message); process.exitCode = 1; });

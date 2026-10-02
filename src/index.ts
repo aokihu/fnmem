@@ -3,3 +3,8 @@ export * from "./runtime.js";
 export * from "./store.js";
 export * from "./types.js";
 export * from "./stores/in-memory.js";
+export * from "./dsl/index.js";
+export { parseRecallQuery } from "./validation.js";
+export * from "./likelihood.js";
+export * from "./runs.js";
+export * from "./stores/file-runs.js";

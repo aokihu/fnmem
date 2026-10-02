@@ -1,12 +1,14 @@
 # DSL specification fixtures
 
-The normative language document is [DSL.md](../docs/DSL.md), with a separate [EBNF grammar](../docs/dsl-v0.ebnf). These sources and expected outputs are stage-two specification artifacts. They cannot run through the current TypeScript callback runtime.
+The normative language document is [DSL.md](../docs/DSL.md), with a separate [EBNF grammar](../docs/dsl-v0.ebnf). These sources and expected outputs are frozen stage-two specification artifacts. Stage-three tests now compile and execute them against the JavaScript backend.
 
 ```sh
 npm run dsl:check
 ```
 
 This command checks file hashes, fixture structure, development-query coverage and frozen evaluation data. It does not recognize DSL syntax or execute memory functions.
+
+Run `npm run dsl:test` for all 109 actual parse/check/compile/recall conformance cases. Run `npm run example` for the compiled branch example, or `npm run dsl:compile -- dsl/examples/branches.fnm --out evaluation-results/branches.json` to save an artifact.
 
 `fixtures.json` records `schemaVersion`, `specVersion`, source SHA-256 values and cases:
 
@@ -20,6 +22,6 @@ This command checks file hashes, fixture structure, development-query coverage a
 
 `examples/development.fnm` translates public experience text; formal experimental knowledge equivalence still needs review. `examples/semantics.fnm` exercises language and runtime rules separately from agent task success. `examples/branches.fnm` covers `when`, chains and Rust-inspired `match`; `if.fnm` and `when.fnm` specify equivalent spellings. `invalid/` isolates compile-time rejection cases, including attempts to use reserved `__` names. Source hashes ensure expectations are reconsidered when examples change. The current draft revision is `runtime-budget-1`.
 
-Fixture queries never contain the random internal budget key. Namespace violations and requests above default runtime ceilings deliberately expect `E_QUERY`. Current runtime tests verify actual injection, per-recall random names, immutable budget snapshots, shared fan-out limits and ceiling enforcement. DSL execution of these fixtures remains stage-three work.
+Fixture queries never contain the random internal budget key. Namespace violations and requests above default runtime ceilings deliberately expect `E_QUERY`. Current runtime tests verify actual injection, per-recall random names, immutable budget snapshots, shared fan-out limits and ceiling enforcement. The same fixtures now pass compiled execution tests, including committed partial data on failures.
 
-Stage three should consume this same fixture file in parser/compiler/runtime tests. Evaluate with at least two caller identities while holding inputs and artifact versions fixed, compare to these expectations and require 100% correct recall consistency. Model-generated query consistency and agent-benefit evidence require later live experiments.
+`npm run eval:dsl-smoke` executes eight development queries for two fixture caller identities and two repetitions: 32 samples with 100% correct recall consistency. These identities are labels, not live models. Fixture metadata remains `specification-only` because it describes expectations; measured results are stored separately. Model-generated query consistency and agent-benefit evidence require later live experiments.

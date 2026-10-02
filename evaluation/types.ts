@@ -1,3 +1,5 @@
+import type { RecallResult, RuntimeLimits } from "../src/types.js";
+
 export type Condition = "none" | "text" | "dsl";
 export type Category = "repeated-failure" | "transfer" | "irrelevant-memory" | "conflict";
 
@@ -76,7 +78,13 @@ export interface Trial {
     readonly ids: readonly string[];
     readonly text: string;
     readonly tokens: number | null;
-    readonly dsl?: { readonly sourceHash: string; readonly compilerVersion: string };
+    readonly dsl?: {
+      readonly sourceHash: string;
+      readonly compilerVersion: string;
+      readonly runtimeVersion: string;
+      readonly limits: Required<RuntimeLimits>;
+      readonly recall: { readonly status: "completed" | "failed"; readonly result: RecallResult; readonly error?: string };
+    };
   };
   readonly steps: readonly { readonly action: string; readonly observation: string; readonly usage?: Usage }[];
   readonly termination: "goal" | "budget" | "invalid-action" | "error";

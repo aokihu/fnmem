@@ -1,0 +1,27 @@
+language fnmem "0";
+
+// The host validates identifiers before recall. Nodes remain peers in a graph.
+memory "pattern-route" {
+  input { likelihoodVersion: string; likelihood: string; }
+  when input.likelihoodVersion == "likelihood-v1" {
+    match input.likelihood {
+      "ruled_out" => { emit text "This pattern does not apply."; },
+      "very_unlikely" => { emit text "Strong evidence opposes this pattern."; },
+      "unlikely" => { emit text "Evidence slightly opposes this pattern."; },
+      "likely" => { emit text "Consider this pattern and verify it."; },
+      "very_likely" | "confirmed" => {
+        emit text "This pattern is supported.";
+        emit memory "recheck-assumptions";
+      },
+      "unknown" => { emit text "Collect the missing necessary facts."; },
+      "undetermined" => { emit text "Compare the supporting and opposing evidence."; },
+      _ => { emit text "Unsupported likelihood identifier."; },
+    }
+  } else {
+    emit text "Unsupported likelihood vocabulary version.";
+  }
+}
+
+memory "recheck-assumptions" {
+  emit text "Recheck the assumptions before repeating the same strategy.";
+}

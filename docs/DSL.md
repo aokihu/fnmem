@@ -1,6 +1,6 @@
 # fnmem DSL v0
 
-Status: specification for stage three, `fnmem-dsl-0`, draft revision `runtime-budget-1`. Sources use `.fnm` and begin with `language fnmem "0";`. This pre-compiler revision includes `when`, Rust-inspired `match`, the `if` alias and a runtime-owned context budget. The grammar is [dsl-v0.ebnf](./dsl-v0.ebnf). No parser or compiler implements this specification yet. Conformance expectations are reviewed examples, not measured language execution or evidence of agent benefit.
+Status: implemented JavaScript backend for `fnmem-dsl-0`, specification revision `runtime-budget-1`. Sources use `.fnm` and begin with `language fnmem "0";`. Compiler and runtime versions are `fnmem-compiler-0.1.0` and `fnmem-runtime-0.1.0`. The grammar is [dsl-v0.ebnf](./dsl-v0.ebnf). All 109 frozen conformance cases now pass actual compilation/execution tests. This demonstrates implementation conformance, not agent benefit.
 
 ## Minimal program
 
@@ -132,7 +132,7 @@ The evaluation contract already defines `RecallQuery` in `evaluation/consistency
 
 Model identity, provider, wall-clock time and random state are not language inputs or built-ins. Additional context fields cannot affect execution unless explicitly declared and read. For experiments, fix the source snapshot, compiler/runtime versions, query and limits; exclude caller identity from the declared task schemas. In model-generated-query experiments, compare canonical queries as well as correct results. Identical execution given identical valid inputs is a semantic guarantee; an LLM producing the right query is still an empirical question.
 
-The current consistency scorer covers structural JSON comparison, explicit limits and reserved-field rejection. The prototype runtime implements ceilings, reserved-field rejection and internal budget injection. Full JSON boundary and DSL schema validation remain stage-three work.
+`parseRecallQuery` validates the canonical raw JSON boundary, including duplicate-key, invalid Unicode and nonfinite-number rejection. `MemoryRuntime` validates field schemas, reserved names and host ceilings. The consistency scorer compares structural JSON with explicit limits and excludes the internal random budget field.
 
 ## Runtime-owned context budget
 
@@ -144,7 +144,7 @@ Every executed invocation must receive an internal context field named `__` foll
 - The runtime's private execution counter and configured ceilings are authoritative. Check limits before scheduling the next execution regardless of conditions/emissions in the memory. Random naming prevents guessing; field immutability, namespace rejection and runtime checks prevent budget modification/reset. Prefixing a known name alone would not provide unpredictability.
 - Random keys are execution metadata and never branch inputs. They are excluded from consistency comparison and semantic replay; a replay generates its own private key while deriving the same remaining values from the recorded limits. Trusted diagnostics may record remaining counts without exposing the key.
 
-This bounds memory-chain activation. It does not interrupt a single arbitrary JavaScript callback that never returns; DSL v0 has no authored loops or external callbacks, and its actual compiled conformance is still pending.
+This bounds memory-chain activation. It does not interrupt a single arbitrary JavaScript callback that never returns; DSL v0 has no authored loops or external callbacks, and its activation limits are exercised by compiled conformance tests.
 
 ## Deterministic execution
 
@@ -157,7 +157,7 @@ This bounds memory-chain activation. It does not interrupt a single arbitrary Ja
 
 For example, entrypoints A and B activate C and D respectively: execution is A, B, C, D, then any subsequently activated nodes. A cycle without text still consumes execution and visit budgets. A duplicate entrypoint executes twice if budgets allow. No priority, hidden ranking, parallel execution or global conflict resolver is introduced.
 
-This preserves the prototype's FIFO/emission behavior. Its context budget views and ceilings are already implemented. Stage three must add complete input/schema validation, definition/input/working-memory snapshots and diagnostic failure data; the prototype still allows arbitrary callbacks, resolves a mutable store during execution, increments count before callback completion and throws without exposing partial data.
+These rules are implemented for compiled bundles and the snapshot-capable in-memory store. Query/input/working-memory data is immutable; successful invocations commit atomically. Errors expose `.code`, `.partial` and, when available, `.invocation` with reference/depth. A custom store must provide stable definitions or its optional `snapshot()` method for recall-wide definition stability. Native callbacks remain a host compatibility interface; their external closure state is outside DSL determinism.
 
 ## Diagnostics
 
@@ -180,7 +180,7 @@ Diagnostics have a stable `code`, human-readable `message` and location. Compile
 | `E_MAX_DEPTH` | Runtime | Queued depth exceeds limit |
 | `E_MAX_VISITS` | Runtime | Next visit exceeds per-ID count |
 
-The parser cannot generally recover every error; reporting the named isolated fixture error is sufficient. Compiler bugs and artifact/version failures are host failures, never empty successful recalls. Stage three can map these codes onto existing error classes while preserving the typed cause.
+The parser cannot generally recover every error; reporting the named isolated fixture error is sufficient. Compiler bugs and artifact/version failures are host failures, never empty successful recalls. `MemoryCompileError.diagnostics` contains compile codes and source locations; `MemoryRuntimeError` and its subclasses expose runtime codes. Native callback failures use `E_EXECUTION` and retain committed partial data.
 
 ## Stage-three acceptance fixtures
 
@@ -191,8 +191,16 @@ The parser cannot generally recover every error; reporting the named isolated fi
 - [branches.fnm](../dsl/examples/branches.fnm) covering `when`/`if` chains, independent conditions, literal/alternative patterns, guards, exhaustive booleans and first-match routing. The `if.fnm`/`when.fnm` sources have identical IDs, queries and expected outputs to specify alias equivalence.
 - Invalid source files with expected compile diagnostics, and invalid queries with expected preflight/runtime errors and diagnostic partial traces.
 
-`npm run dsl:check` checks the artifact inventory, development-query correspondence, trace/result shapes, phase/code consistency and unchanged frozen evaluation hashes. It does **not** parse or execute DSL. Stage three must replace this boundary with actual parse/check/compile/recall conformance against every fixture, including exact ordered text and trace equality. Add a separate compiled-artifact round trip to show handwritten callbacks are no longer the authoring entry point.
+`npm run dsl:check` checks the artifact inventory, development-query correspondence, trace/result shapes, phase/code consistency and unchanged frozen evaluation hashes. It does **not** parse or execute DSL. `npm run dsl:test` separately performs actual parse/check/compile/recall conformance against every fixture, including exact ordered text, trace and failure equality. Artifact file/JSON round trips and direct Node.js module loading are tested. `npm run example` reads and compiles `.fnm` source.
 
 Before formal benefit evaluation, audit the translated knowledge against the text baseline: guards/defaults, omission of inactive facts, helper definitions and current-context text can change what the agent receives. Both conditions must retain the same source knowledge and initial selection. These small draft examples do not certify experimental fairness or justify a memory improvement claim.
 
-The first backend emits JavaScript compatible with the existing Node.js package. Parsing, static validation and emission from checked nodes must precede artifact loading; source text is never interpolated as JavaScript code. Pin `fnmem-dsl-0`, source SHA-256 and compiler/runtime versions in the artifact. Implementation format and bundling are stage-three decisions. WASM, arithmetic, nullable/nested data and additional working-memory searches require a demonstrated need and a new specification version.
+The first backend emits JavaScript compatible with the existing Node.js package. `compileMemorySource(source)` parses and statically validates before generating a module; source text is never interpolated as executable JavaScript. Its JSON-serializable artifact contains `formatVersion`, `languageVersion`, `specRevision`, `compilerVersion`, `runtimeVersion`, `source`, `sourceHash` (SHA-256) and `javascript`. `loadMemoryArtifact(artifact)` regenerates the artifact from source and verifies every field before importing the checked module into an immutable bundle.
+
+```sh
+npm run dsl:compile -- dsl/examples/branches.fnm --out evaluation-results/branches.json
+npm run example
+npm run dsl:test
+```
+
+The compile command refuses to overwrite an existing artifact. WASM, arithmetic, nullable/nested data and additional working-memory searches require a demonstrated need and a new specification version.

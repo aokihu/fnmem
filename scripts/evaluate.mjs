@@ -5,10 +5,11 @@ import { runTrial } from "../dist/evaluation/benchmark.js";
 import { createReport } from "../dist/evaluation/report.js";
 import { parseSuite } from "../dist/evaluation/tasks.js";
 import { createConsistencyReport } from "../dist/evaluation/consistency.js";
+import { compileMemorySource, loadMemoryArtifact, MemoryRuntime } from "../dist/src/index.js";
 
 const hash = (text) => createHash("sha256").update(text).digest("hex");
 const [command, ...args] = process.argv.slice(2);
-const usage = "Usage: evaluate.mjs smoke [--out DIR] | score --records FILE [--split development|holdout] [--out DIR] | consistency --plan FILE --records FILE [--out DIR]";
+const usage = "Usage: evaluate.mjs smoke|dsl-smoke [--out DIR] | score --records FILE [--split development|holdout] [--out DIR] | consistency --plan FILE --records FILE [--out DIR]";
 
 function parseArguments(args) {
   const options = {};
@@ -53,15 +54,20 @@ async function saveReport(directory, report, trials) {
 
 async function main() {
   const options = parseArguments(args);
-  if (command === "smoke") {
+  if (command === "smoke" || command === "dsl-smoke") {
     if (options["--plan"] || options["--records"] || (options["--split"] && options["--split"] !== "development")) {
       throw new Error("Smoke checks use development fixtures only");
     }
     const { suite, suiteHash } = await loadSuite("development");
     const fixtureSource = await readFile(new URL("../evaluation/data/development-trajectories.json", import.meta.url), "utf8");
     const trajectories = JSON.parse(fixtureSource);
+    let dsl;
+    if (command === "dsl-smoke") {
+      const source = await readFile(new URL("../dsl/examples/development.fnm", import.meta.url), "utf8");
+      dsl = await loadMemoryArtifact(await compileMemorySource(source));
+    }
     const configuration = {
-      mode: "fixture", conditions: ["none", "text"], repetitions: 2,
+      mode: "fixture", conditions: dsl ? ["none", "text", "dsl"] : ["none", "text"], repetitions: 2,
       agent: { provider: "local-fixture", model: "scripted-actions", revision: hash(fixtureSource), temperature: 0 },
       limits: { maxActions: 4, maxMemoryCharacters: 4000, maxMemoryTokens: 1024, timeoutMs: 1000 },
     };
@@ -75,6 +81,7 @@ async function main() {
           trials.push(await runTrial({
             task, suiteHash, id: randomUUID(), repetition, condition, configuration,
             agent: { async act() { return { action: schedule[index++] }; } },
+            ...(dsl ? { dsl } : {}),
           }));
         }
       }
@@ -82,8 +89,34 @@ async function main() {
     const report = createReport(suite, suiteHash, trials);
     const directory = options["--out"] ?? `evaluation-results/smoke-${new Date().toISOString().replace(/[:.]/g, "-")}`;
     const output = await saveReport(directory, report, trials);
+    if (dsl) {
+      const fixtures = JSON.parse(await readFile(new URL("../dsl/fixtures.json", import.meta.url), "utf8"));
+      const plan = {
+        version: "dsl-development-1", mode: "fixture", condition: "dsl", inputMode: "fixed",
+        models: ["fixture-caller-a", "fixture-caller-b"], repetitions: 2,
+        memory: { snapshotHash: dsl.artifact.sourceHash, compilerVersion: dsl.artifact.compilerVersion, runtimeVersion: dsl.artifact.runtimeVersion },
+        cases: fixtures.cases.filter((item) => item.task).map((item) => ({ id: item.task, query: item.query, expectedMessages: item.expected.messages })),
+      };
+      const recalls = [];
+      for (const item of plan.cases) {
+        for (let repetition = 0; repetition < plan.repetitions; repetition++) {
+          for (const model of plan.models) {
+            const result = await new MemoryRuntime(dsl).recall(item.query);
+            recalls.push({ id: randomUUID(), case: item.id, model, repetition, memory: plan.memory, query: item.query, status: "completed", messages: result.messages });
+          }
+        }
+      }
+      const planSource = JSON.stringify(plan, null, 2) + "\n";
+      const consistency = { ...createConsistencyReport(plan, recalls), planHash: hash(planSource) };
+      await writeFile(resolve(output, "artifact.json"), JSON.stringify(dsl.artifact, null, 2) + "\n");
+      await writeFile(resolve(output, "consistency-plan.json"), planSource);
+      await writeFile(resolve(output, "recalls.jsonl"), recalls.map((sample) => JSON.stringify(sample)).join("\n") + "\n");
+      await writeFile(resolve(output, "consistency.json"), JSON.stringify(consistency, null, 2) + "\n");
+      console.log(`Compiled recall check: ${recalls.length} fixture samples; correct agreement ${consistency.expectedResultMatchRate * 100}%.`);
+      if (!consistency.passed) throw new Error("Compiled development recall did not match the fixed expected results");
+    }
     console.log(`Harness check only: ${trials.length} scripted trials, ${suite.tasks.length} development tasks.`);
-    console.log(`Identical scripted actions are used for both conditions. No model was called; this is not evidence of memory improvement.`);
+    console.log(`Identical scripted actions are used for all conditions. No model was called; this is not evidence of memory improvement.`);
     console.log(`Records and report: ${output}`);
     if (!report.complete) throw new Error("Smoke experiment is incomplete");
     return;

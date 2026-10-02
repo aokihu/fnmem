@@ -2,6 +2,12 @@ export type MemoryId = string;
 export type MemoryContext = Readonly<Record<string, unknown>>;
 export type MemoryInput = Readonly<Record<string, unknown>>;
 
+export interface MemoryField {
+  readonly name: string;
+  readonly type: "string" | "number" | "boolean";
+  readonly defaultValue?: string | number | boolean;
+}
+
 export interface TextEmission {
   readonly type: "text";
   readonly content: string;
@@ -31,6 +37,8 @@ export interface MemoryFunctionInput {
 export interface MemoryFunction {
   readonly id: MemoryId;
   readonly description?: string;
+  readonly contextSchema?: readonly MemoryField[];
+  readonly inputSchema?: readonly MemoryField[];
   execute(
     input: MemoryFunctionInput,
   ): readonly MemoryEmission[] | Promise<readonly MemoryEmission[]>;
@@ -67,4 +75,33 @@ export interface RecallResult {
   readonly messages: readonly TextEmission[];
   readonly trace: readonly ExecutionTraceEntry[];
   readonly executed: number;
+}
+
+export interface InvocationRecord {
+  /** Unique within this recall, even for repeated visits to the same memory. */
+  readonly id: string;
+  readonly ref: MemoryId;
+  readonly depth: number;
+  readonly input: MemoryInput;
+  readonly status: "queued" | "completed" | "failed";
+  readonly resolvedInput?: MemoryInput;
+  readonly resolvedContext?: MemoryContext;
+  readonly emissions?: readonly MemoryEmission[];
+}
+
+export interface ActivationEdge {
+  readonly from: string;
+  readonly to: string;
+  /** Position in the emitting invocation's validated output array. */
+  readonly emissionIndex: number;
+}
+
+export interface ExecutionObservation {
+  readonly invocations: readonly InvocationRecord[];
+  readonly activations: readonly ActivationEdge[];
+}
+
+export interface ObservedRecallResult {
+  readonly result: RecallResult;
+  readonly observation: ExecutionObservation;
 }

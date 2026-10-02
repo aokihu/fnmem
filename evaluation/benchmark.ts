@@ -1,4 +1,12 @@
 import type { Agent, Condition, Configuration, Score, Task, Trial, Usage } from "./types.js";
+import { CompiledMemoryBundle, MemoryRuntime } from "../src/index.js";
+import type { RecallResult } from "../src/types.js";
+
+const RECALL_LIMITS = { maxExecutions: 32, maxDepth: 8, maxVisitsPerMemory: 4 } as const;
+
+export function formatRecallMemory(result: RecallResult): string {
+  return result.messages.map((message) => `[${message.source}]\n${message.content}`).join("\n\n");
+}
 
 export function getTextMemory(task: Task): string {
   return task.selectedMemories.map((id) => {
@@ -41,27 +49,44 @@ export async function runTrial(options: {
   condition: Condition;
   configuration: Configuration;
   agent: Agent;
+  dsl?: CompiledMemoryBundle;
 }): Promise<Trial> {
-  const { task, suiteHash, id, repetition, condition, configuration, agent } = options;
+  const { task, suiteHash, id, repetition, condition, configuration, agent, dsl } = options;
   checkConfiguration(configuration);
   if (!Number.isSafeInteger(repetition) || repetition < 0 || repetition >= configuration.repetitions) throw new Error("Invalid repetition");
   if (!configuration.conditions.includes(condition)) throw new Error("Unplanned condition");
-  if (condition === "dsl") throw new Error("DSL evaluation requires the compiler; handwritten JS memories are not a substitute");
-  if (condition !== "none" && condition !== "text") throw new Error("Unknown condition");
-  const memory = condition === "text" ? getTextMemory(task) : "";
+  if (condition === "dsl" && !(dsl instanceof CompiledMemoryBundle)) throw new Error("DSL evaluation requires a verified compiled bundle");
+  if (!["none", "text", "dsl"].includes(condition)) throw new Error("Unknown condition");
+  if (condition !== "none" && configuration.mode === "model" && !agent.countMemoryTokens) throw new Error("Model experiments require the model's memory tokenizer");
+  const start = Date.now();
+  let memory = condition === "text" ? getTextMemory(task) : "";
+  let dslRecord: Trial["memory"]["dsl"];
+  let recallError: string | undefined;
+  if (condition === "dsl" && dsl) {
+    let recall: NonNullable<Trial["memory"]["dsl"]>["recall"];
+    try {
+      const result = await new MemoryRuntime(dsl).recall({ context: task.context, entrypoints: task.selectedMemories, limits: RECALL_LIMITS });
+      memory = formatRecallMemory(result);
+      recall = { status: "completed", result };
+    } catch (cause) {
+      const failure = cause as { code?: string; partial?: RecallResult; message?: string };
+      recallError = `${failure.code ?? "E_EXECUTION"}: ${failure.message ?? String(cause)}`;
+      recall = { status: "failed", result: failure.partial ?? { messages: [], trace: [], executed: 0 }, error: recallError };
+    }
+    dslRecord = { sourceHash: dsl.artifact.sourceHash, compilerVersion: dsl.artifact.compilerVersion, runtimeVersion: dsl.artifact.runtimeVersion, limits: RECALL_LIMITS, recall };
+  }
   if (memory.length > configuration.limits.maxMemoryCharacters) throw new Error("Memory exceeds character budget; do not silently truncate");
   const memoryTokens = condition === "none" ? 0 : agent.countMemoryTokens?.(memory) ?? null;
   if (configuration.mode === "model" && memoryTokens === null) throw new Error("Model experiments require the model's memory tokenizer");
   if (memoryTokens !== null && (!Number.isSafeInteger(memoryTokens) || memoryTokens < 0 || memoryTokens > configuration.limits.maxMemoryTokens)) throw new Error("Invalid or over-budget memory token count");
-  const start = Date.now();
   const steps: Trial["steps"][number][] = [];
   const history = task.priorFailures.map((action) => ({
     action, observation: transition(task, task.environment.initial, action)!.observation,
   }));
   let state = task.environment.initial;
-  let termination: Trial["termination"] = "budget";
-  let error: string | undefined;
-  for (let index = 0; index < configuration.limits.maxActions; index += 1) {
+  let termination: Trial["termination"] = recallError ? "error" : "budget";
+  let error: string | undefined = recallError;
+  for (let index = 0; !recallError && index < configuration.limits.maxActions; index += 1) {
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
@@ -94,7 +119,7 @@ export async function runTrial(options: {
   return {
     schemaVersion: 1, id, suiteHash, task: task.id, repetition, condition,
     configuration: structuredClone(configuration),
-    memory: { ids: condition === "none" ? [] : [...task.selectedMemories], text: memory, tokens: memoryTokens },
+    memory: { ids: condition === "none" ? [] : [...task.selectedMemories], text: memory, tokens: memoryTokens, ...(dslRecord ? { dsl: dslRecord } : {}) },
     steps, termination, elapsedMs: Date.now() - start, ...(error ? { error } : {}),
   };
 }
@@ -116,7 +141,16 @@ export function scoreTrial(task: Task, trial: Trial): Score {
   if (trial.condition === "none" && trial.memory.text !== "") throw new Error("No-memory trial contains memory");
   if (trial.condition === "none" && trial.memory.tokens !== 0) throw new Error("No-memory token count must be zero");
   if (trial.condition === "text" && trial.memory.text !== getTextMemory(task)) throw new Error("Text baseline was modified");
-  if (trial.condition === "dsl" && (!trial.memory.dsl?.sourceHash || !trial.memory.dsl.compilerVersion)) throw new Error("DSL source and compiler version are required");
+  if (trial.condition === "dsl") {
+    const record = trial.memory.dsl;
+    if (!record?.sourceHash || !record.compilerVersion || !record.runtimeVersion || !record.recall) throw new Error("DSL source and compiler/runtime versions are required");
+    if (record.recall.result.executed !== record.recall.result.trace.length) throw new Error("Invalid DSL execution trace");
+    if (record.recall.status === "completed") {
+      if (record.recall.error || trial.memory.text !== formatRecallMemory(record.recall.result)) throw new Error("DSL recall content was modified");
+    } else if (record.recall.status !== "failed" || !record.recall.error || trial.termination !== "error" || trial.steps.length || trial.memory.text !== "") {
+      throw new Error("Failed DSL recall cannot publish partial memory or agent actions");
+    }
+  }
   let state = task.environment.initial;
   const disproved = new Set(task.priorFailures.map((action) => JSON.stringify([state, action])));
   let repeated = 0;

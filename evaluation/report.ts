@@ -37,6 +37,7 @@ export function createReport(suite: Suite, suiteHash: string, trials: readonly T
   const key = configurationKey(configuration);
   const rows = new Map<string, { trial: Trial; score: Score }>();
   const ids = new Set<string>();
+  let dslRevision: string | undefined;
   for (const trial of trials) {
     if (trial.suiteHash !== suiteHash) throw new Error("Dataset hash mismatch");
     if (configurationKey(trial.configuration) !== key) throw new Error("Cannot compare different experiment configurations");
@@ -45,6 +46,12 @@ export function createReport(suite: Suite, suiteHash: string, trials: readonly T
     const task = suite.tasks.find((entry) => entry.id === trial.task);
     if (!task) throw new Error(`Unknown task '${trial.task}'`);
     const score = scoreTrial(task, trial);
+    if (trial.memory.dsl) {
+      const memory = trial.memory.dsl;
+      const revision = JSON.stringify([memory.sourceHash, memory.compilerVersion, memory.runtimeVersion, memory.limits.maxExecutions, memory.limits.maxDepth, memory.limits.maxVisitsPerMemory]);
+      if (dslRevision !== undefined && revision !== dslRevision) throw new Error("Cannot compare different DSL snapshots or runtime limits");
+      dslRevision = revision;
+    }
     const cell = JSON.stringify([trial.task, trial.repetition, trial.condition]);
     if (rows.has(cell)) throw new Error(`Duplicate task/repetition/condition: ${cell}`);
     rows.set(cell, { trial, score });

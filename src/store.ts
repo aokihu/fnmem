@@ -1,6 +1,7 @@
 import type { MemoryFunction, MemoryId } from "./types.js";
 
 export interface MemoryStore {
+  snapshot?(): MemoryStore | Promise<MemoryStore>;
   get(id: MemoryId): MemoryFunction | undefined | Promise<MemoryFunction | undefined>;
 }
 

@@ -14,9 +14,9 @@ Nodes may activate several other nodes, be reached from different nodes, or part
 
 ## Multiple inputs
 
-The current prototype receives structured `context`, invocation `input`, the read-only working-memory view and execution metadata through a TypeScript callback. The planned authoring interface is an independent DSL compiled into Node.js-compatible artifacts, preserving these multiple inputs and the two emission types.
+Authors write the independent [DSL v0 language](./DSL.md). The compiler checks declared context/input types and references, then generates Node.js-compatible JavaScript functions. Each invocation receives immutable structured `context`, invocation `input`, a working-memory snapshot and execution metadata.
 
-The [DSL v0 specification](./DSL.md) now defines grammar, field types, canonical queries and deterministic execution semantics. Its sources and expected traces are ready for the compiler stage; no DSL compiler has been implemented yet. Handwritten callbacks remain examples for discussing and testing behavior during this transition.
+`compileMemorySource` creates a versioned artifact; `loadMemoryArtifact` verifies it and supplies an immutable bundle to `MemoryRuntime`. The original callback ABI remains a host integration interface. All 109 frozen language cases now run through the compiler/runtime.
 
 ## Multiple outputs
 
@@ -29,7 +29,7 @@ A single memory may emit any number of either type.
 
 ## Working memory
 
-When text and memory calls are emitted together, text is retained in a temporary working-memory buffer while the runtime continues evaluating queued memories. Subsequent memory functions receive a read-only view of that buffer.
+When text and memory calls are emitted together, text is retained in a temporary working-memory buffer while the runtime continues evaluating queued memories. Subsequent memory functions receive an immutable snapshot of that buffer; their own pending emissions become visible only after the invocation commits.
 
 The final recall result contains the accumulated text and a trace of executed memories.
 

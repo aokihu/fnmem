@@ -5,6 +5,7 @@
   "type": "module",
   "license": "Apache-2.0",
   "private": false,
+  "bin": { "fnmem-mcp": "dist/src/mcp/cli.js" },
   "engines": {
     "node": ">=20"
   },
@@ -12,6 +13,10 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/src/mcp/index.d.ts",
+      "import": "./dist/src/mcp/index.js"
     }
   },
   "files": [
@@ -23,10 +28,16 @@
     "clean": "rm -rf dist",
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test test/*.test.mjs",
-    "example": "npm run build && node dist/examples/basic.js",
+    "example": "npm run build && node examples/dsl.mjs",
+    "example:likelihood": "npm run build && node examples/likelihood.mjs",
+    "example:runs": "npm run build && node examples/runs.mjs",
+    "mcp": "node dist/src/mcp/cli.js",
     "check": "npm run test && npm run dsl:check",
     "dsl:check": "node scripts/check-dsl-spec.mjs",
+    "dsl:test": "npm run build && node --test test/dsl.test.mjs",
+    "dsl:compile": "npm run build && node scripts/compile-memory.mjs",
     "eval:smoke": "npm run build && node scripts/evaluate.mjs smoke",
+    "eval:dsl-smoke": "npm run build && node scripts/evaluate.mjs dsl-smoke",
     "eval:score": "npm run build && node scripts/evaluate.mjs score",
     "eval:consistency": "npm run build && node scripts/evaluate.mjs consistency"
   },
@@ -39,6 +50,13 @@
     "llm"
   ],
   "devDependencies": {
+    "@modelcontextprotocol/client": "^2.2.0",
+    "@types/node": "^20.19.43",
     "typescript": "^5.8.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/node": "^2.1.0",
+    "@modelcontextprotocol/server": "^2.2.0",
+    "zod": "^4.6.5"
   }
 }

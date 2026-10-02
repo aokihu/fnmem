@@ -2,7 +2,7 @@
 
 fnmem is an experiment. The primary question is whether memories written in an independent DSL, compiled and executed by fnmem, improve task outcomes compared with equivalent memories injected as text. DSL feasibility and agent benefit are separate hypotheses.
 
-This revision delivers a task environment, text baseline, trial runner and scorer. The DSL condition is reserved and the runner rejects it until a compiler exists. Scripted fixtures validate the harness; they are not evidence of memory effectiveness.
+The task environment, text baseline, trial runner and scorer support `none`, `text` and `dsl`. The DSL condition requires a verified `CompiledMemoryBundle`; handwritten callbacks cannot substitute for compiled memories. Scripted fixtures validate the harness; they are not evidence of memory effectiveness.
 
 ## Conditions and fairness
 
@@ -10,11 +10,11 @@ This revision delivers a task environment, text baseline, trial runner and score
 | --- | --- |
 | `none` | Empty memory; calibration only. |
 | `text` | Selected experiences, including their conditions and strategies, rendered in stable selection order as `[id]` followed by text. |
-| `dsl` | Working-memory output of DSL programs compiled and executed by fnmem; added in the compiler stage. |
+| `dsl` | Working-memory output of DSL programs compiled and executed by fnmem, rendered as `[source]` followed by text in emission order. |
 
 The main comparison is `dsl - text`. `text - none` checks whether the task set responds to memory at all. Handwritten JavaScript callbacks are not the functional-memory experimental condition.
 
-Keep source experiences, initial selected memory IDs, public task state, agent prompt revision, provider/model configuration, action budget and memory-token budget identical across conditions. Every strategy encoded in DSL must have an equivalent expression in the passive baseline. Graph calls cannot introduce additional knowledge available only to the DSL group. Record all activated memories when the run layer is implemented.
+Keep source experiences, initial selected memory IDs, public task state, agent prompt revision, provider/model configuration, action budget and memory-token budget identical across conditions. Every strategy encoded in DSL must have an equivalent expression in the passive baseline. Graph calls cannot introduce additional knowledge available only to the DSL group. DSL trial records already retain source/compiler/runtime identity, execution limits, recall messages and activation traces. The [persistent Run service](./MEMORY_RUNS.md) adds invocation identities, activation edges and optional versioned judgment evidence; experiment adapters must opt into recording Runs.
 
 The agent supplies one action ID per turn. It receives public task information, memory text and observations, including evidence of prior failures. It does not receive environment transitions, goal states, effectiveness flags or expected trajectories. Prepare public structured context once and reuse it across conditions; do not give one condition a stronger semantic extractor.
 
@@ -64,7 +64,7 @@ The runtime should obtain observed facts from the host and define defaults in th
 | Expected-result match | Successfully returned payloads matching the case's correct result divided by all planned samples. Target 100%; constant empty/wrong results cannot pass by agreeing. |
 | Coverage and errors | Report every planned model/case/repetition, missing samples and failures. An incomplete matrix suppresses overall rates and cannot pass. |
 
-The correct queries and results are defined by the test cases before runs, not by another LLM. Compare JSON structurally: ignore object key insertion order, preserve array/emission order, duplicates, text, sources and deterministic metadata. Compare result payloads separately from Run IDs, timestamps, latency and token counts, which naturally differ. Also inspect dynamic activation paths when Memory Run trace recording becomes available.
+The correct queries and results are defined by the test cases before runs, not by another LLM. Compare JSON structurally: ignore object key insertion order, preserve array/emission order, duplicates, text, sources and deterministic metadata. Compare result payloads separately from Run IDs, timestamps, latency and token counts, which naturally differ. For recorded Memory Runs, also inspect dynamic activation paths using invocation IDs and emission positions.
 
 `evaluation/consistency.ts` implements these scores without relaxing the single-model benefit report's configuration checks. A `ConsistencyPlan` specifies model identities (including provider/model/adapter revisions), repetitions, memory revisions, canonical queries and expected messages. Canonical queries explicitly include context, each entrypoint's input and execution limits. Each `RecallSample` records the actual query, returned messages or failure. The CLI pins the exact plan content with SHA-256.
 
@@ -72,9 +72,15 @@ The correct queries and results are defined by the test cases before runs, not b
 npm run eval:consistency -- --plan PLAN.json --records SAMPLES.jsonl --out NEW_DIRECTORY
 ```
 
-Failed checks still produce an inspectable report and exit unsuccessfully. Fixture plans are marked `harness-check-only`; scorer self-tests do not show that real models or the not-yet-implemented DSL satisfy the requirement. Live adapters, canonical query construction and the real cross-model matrix remain later implementation and evaluation work. Run text and DSL consistency experiments separately, then compare them alongside within-model benefit reports. Keep golden outputs correct and diverse, including valid empty results and near-neighbor queries requiring different results.
+Failed checks still produce an inspectable report and exit unsuccessfully. Fixture plans are marked `harness-check-only`; scorer self-tests do not show that real models satisfy the requirement. The compiled DSL smoke check separately verifies correct fixed queries using fixture caller labels. Live adapters, canonical query construction and the real cross-model matrix remain later implementation and evaluation work. Run text and DSL consistency experiments separately, then compare them alongside within-model benefit reports. Keep golden outputs correct and diverse, including valid empty results and near-neighbor queries requiring different results.
 
 ## Pairing and uncertainty
+
+### Word-based judgments
+
+For the [likelihood-v1 protocol](./LIKELIHOOD.md), distinguish control weights from calibrated probabilities. Record the canonical identifier and vocabulary version, plus the evaluated facts and host-verification evidence. `unknown` (missing facts) and `undetermined` (balanced evidence) have no numeric value; report them separately, without coercion to zero/0.5 or silently dropping them. Assess judgment correctness and downstream effects as well as calibration. Test languages and models on the same evidence with the same rubric, and record invalid response/verification failures. The fixed protocol tests and caller labels do not establish live language/model agreement.
+
+### Paired task comparisons
 
 Pair by dataset hash, task ID, repetition and experiment configuration. Reject duplicate cells or changed model, prompt/adapter revision, temperature or budgets. Suppress paired comparisons whenever a planned cell is missing.
 
@@ -103,4 +109,14 @@ Smoke creates a new directory with `trials.jsonl` and `report.json`, without ove
 
 Use `--out NEW_DIRECTORY` to select output. Scoring accepts `--split development|holdout` and verifies data hashes. An incomplete experiment saves a report for inspection, suppresses paired comparisons and exits unsuccessfully.
 
-`runTrial` accepts a provider-independent `Agent` adapter. `createReport` independently scores stored trials. These helpers live outside the published runtime API. A live model adapter and compiled DSL memory preparation remain subsequent stages.
+`runTrial` accepts a provider-independent `Agent` adapter. `createReport` independently scores stored trials. These helpers live outside the published runtime API. Compiled DSL preparation is implemented; a live model adapter remains pending.
+
+## Running the compiled DSL check
+
+```bash
+npm run eval:dsl-smoke -- --out evaluation-results/NEW_DIRECTORY
+```
+
+This runs 48 scripted trials: eight development tasks, two repetitions and all three conditions. The action schedules are identical, so each condition has 50% completion and paired completion differences are zero. The DSL condition actually compiles and executes `development.fnm`; it stores the artifact alongside trial records and the report. Failed recalls record committed partial diagnostics, publish no memory to the agent and fail the trial. Reports reject mixed DSL snapshots or execution limits.
+
+The same command executes 32 fixed-query samples: eight cases, two fixture caller labels and two repetitions. `consistency-plan.json`, `recalls.jsonl` and `consistency.json` record the full matrix and correctness checks. The current fixture check achieves 100% correct agreement. These labels do not represent live LLMs, and the frozen queries are supplied directly. No model-generated-query consistency or memory-benefit claim follows from this result.

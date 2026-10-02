@@ -66,45 +66,41 @@ That small ABI is deliberate. Scheduling, recursion guards and the working-memor
 
 ## Quick example
 
+Write memories in `.fnm` using the independent DSL:
+
+```text
+language fnmem "0";
+
+memory "detect-stuck" {
+  context { failures: number = 0; }
+  when context.failures >= 3 {
+    emit text "Repeated failure detected.";
+    emit memory "rethink-strategy";
+  } else {
+    emit text "Continue the current approach.";
+  }
+}
+
+memory "rethink-strategy" {
+  emit text "Generate a structurally different approach before retrying.";
+}
+```
+
+Compile and execute from Node.js (where `source` is the file's UTF-8 text):
+
 ```ts
-import { InMemoryStore, MemoryRuntime } from "fnmem";
+import { compileMemorySource, loadMemoryArtifact, MemoryRuntime } from "fnmem";
 
-const store = new InMemoryStore([
-  {
-    id: "detect-stuck",
-    execute({ context }) {
-      if (Number(context.failures ?? 0) < 3) {
-        return [{ type: "text", content: "Continue the current approach." }];
-      }
-
-      return [
-        { type: "text", content: "Repeated failure detected." },
-        { type: "memory", ref: "rethink-strategy" },
-      ];
-    },
-  },
-  {
-    id: "rethink-strategy",
-    execute() {
-      return [
-        {
-          type: "text",
-          content: "Generate a structurally different approach before retrying.",
-        },
-      ];
-    },
-  },
-]);
-
-const memory = new MemoryRuntime(store);
-
-const result = await memory.recall({
+const artifact = await compileMemorySource(source);
+const bundle = await loadMemoryArtifact(artifact);
+const result = await new MemoryRuntime(bundle).recall({
   entrypoints: ["detect-stuck"],
   context: { failures: 3 },
 });
-
 console.log(result.messages);
 ```
+
+`npm run example` runs [branches.fnm](./dsl/examples/branches.fnm) through this path. Use `npm run dsl:compile -- dsl/examples/branches.fnm --out evaluation-results/branches.json` to save a compiled artifact. The loader verifies source, generated code and versions before loading it.
 
 ## Design principles
 
@@ -119,13 +115,13 @@ console.log(result.messages);
 
 **Experimental / v0.1 development.** The core execution model is implemented and covered by initial tests. APIs may change while the functional-memory model is validated with real agents.
 
-The intended memory authoring interface is an independent DSL compiled into Node.js-compatible artifacts. The callbacks above are the current prototype, not the final source format. Development starts with a text-memory comparison harness, followed by the DSL/compiler, observable Memory Runs and a minimal MCP service. See the [development plan](./docs/DEVELOPMENT_PLAN.md).
+Memory authors now use an independent DSL compiled into Node.js-compatible JavaScript artifacts. The original callback ABI remains available for host compatibility. Evaluation foundations, the compiler, persistent Memory Runs and stdio/HTTP MCP interfaces are implemented. Memory formation comes next. See the [development plan](./docs/DEVELOPMENT_PLAN.md).
 
 The evaluation foundation includes eight synthetic development tasks, eight reserved pilot variants, an environment scorer and paired reports. `npm run eval:smoke` validates the harness using identical scripted actions across conditions; it calls no model and does not demonstrate a memory improvement. See the [evaluation protocol](./docs/EVALUATION.md).
 
 Another experimental goal is 100% correct recall consistency across models: compare both fixed queries and model-generated queries against frozen expected results. `npm run eval:consistency -- --plan PLAN.json --records SAMPLES.jsonl` scores this separately from task completion. Real cross-model results remain pending.
 
-Stage two now defines the [DSL v0 language](./docs/DSL.md), its [formal grammar](./docs/dsl-v0.ebnf) and [conformance fixtures](./dsl/README.md). The subset supports typed context/input, read-only working memory, `when`/`if`, Rust-inspired `match` and text/memory emissions. `npm run dsl:check` checks the specification artifacts. Parsing, JavaScript compilation and semantic conformance execution are the next stage; the DSL examples are not runnable yet.
+The specification defines the [DSL v0 language](./docs/DSL.md), its [formal grammar](./docs/dsl-v0.ebnf) and [conformance fixtures](./dsl/README.md). The subset supports typed context/input, read-only working memory, `when`/`if`, Rust-inspired `match` and text/memory emissions. `npm run dsl:check` checks the specification inventory; `npm run dsl:test` actually parses, checks, compiles and executes all 109 frozen conformance cases. `npm run eval:dsl-smoke` runs all three evaluation conditions and 32 fixed-query recall samples. These use scripted callers, with no real LLM or benefit claim.
 
 Current scope:
 
@@ -136,19 +132,37 @@ Current scope:
 - depth, visit and execution budgets
 - in-memory store
 - execution trace
-- runnable example and tests
+- independent DSL parser, static checker and JavaScript compiler
+- immutable compiled bundles and validated query/schema boundaries
+- diagnostic partial results on failure
+- insert-only file storage of completed/failed Memory Runs
+- invocation identities, activation edges and replay from saved DSL artifacts
+- default stdio and shared HTTP MCP recall/resources
+- runnable DSL example and conformance tests
+
+The [likelihood input protocol](./docs/LIKELIHOOD.md) adds six word choices at 0.2 intervals, plus separate missing-information and balanced-evidence states. Models return fixed identifiers; the host validates them and records the vocabulary version and control weight. English and Chinese descriptions share one catalog. `npm run example:likelihood` runs the protocol through compiled DSL; it uses scripted responses and does not measure live model calibration.
+
+[Memory Runs](./docs/MEMORY_RUNS.md) save the original artifact, request, host ceilings, graph observations, results and optional judgment evidence. `MemoryRunService.recall()` returns a Run resource reference after saving; `read()` inspects it without execution; `replay()` uses its snapshot and records whether semantic output matches. `npm run example:runs` demonstrates successful and failed records in `evaluation-results/memory-runs/`.
+
+The [MCP interface](./docs/MCP.md) exposes `recall` and read-only definitions/Run resources. Build once, then use either mode:
+
+```sh
+npm run build
+node dist/src/mcp/cli.js --source examples/likelihood.fnm
+node dist/src/mcp/cli.js --mode http --source examples/likelihood.fnm
+```
+
+No `--mode` means stdio. HTTP listens at `http://127.0.0.1:3333/mcp` by default; use `--host` for a shared network interface. All connected agents share definitions and persisted Runs, while each query has its own input and budget. The executable is also available as `fnmem-mcp` when the package is installed. Use the compiled CLI directly in agent launch configuration.
 
 Upcoming experimental stages:
 
-- DSL parser, static checker and JavaScript compiler
-- versioned, observable Memory Runs
-- minimal MCP recall tool and read-only resources
+- memory formation with retained observations, candidate validation and Formation Runs
+- live memory-benefit and cross-model evaluation
 
 Deferred pending evidence:
 
 - vector/semantic retrieval
-- persistent storage adapters
-- automatic memory learning
+- remote memory/storage adapters
 - graph databases
 - priorities and parallel scheduling
 - model-generated memory functions
@@ -176,14 +190,24 @@ The first planned reference integration is **ATOM**, but fnmem is intentionally 
 
 ```text
 src/
+  dsl/                # parser, static checker, JavaScript compiler and artifact loader
+  validation.ts       # finite JSON, canonical queries and field schemas
   runtime.ts          # bounded execution queue
+  runs.ts             # persistent recall/read/replay service and Run records
+  mcp/                # recall/resources, stdio/HTTP transports and CLI
   types.ts            # public functional-memory ABI
   store.ts            # storage interface
   stores/in-memory.ts # minimal reference store
+  stores/file-runs.ts # insert-only local Run records
 examples/
-  basic.ts
+  dsl.mjs             # compiled .fnm example
+  basic.ts            # original callback example
 test/
   runtime.test.mjs
+  dsl.test.mjs
+dsl/
+  examples/           # authoring examples
+  fixtures.json       # frozen conformance expectations
 docs/
   CONCEPTS.md
   ARCHITECTURE.md
@@ -198,7 +222,10 @@ Requirements: Node.js 20+ and TypeScript 5.8+.
 npm install
 npm test
 npm run example
+npm run example:likelihood
+npm run example:runs
 npm run eval:smoke
+npm run eval:dsl-smoke
 ```
 
 ## Contributing
